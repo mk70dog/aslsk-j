@@ -1,0 +1,2300 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ASL SK Judge">
+<title>ASLSK Tactical Workstation v8.0 Real Hardware</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#080808;color:#ccddee;font-family:monospace;min-height:100dvh;overflow-x:hidden}
+button{font-family:monospace;cursor:pointer;touch-action:manipulation}
+/* ===== HEADER ===== */
+#hdr{background:linear-gradient(180deg,#1a1a2e 0%,#0d0d1a 100%);border-bottom:2px solid #0055aa;padding:8px 12px;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:14px;font-weight:bold;letter-spacing:0.15em;color:#c8a032;text-shadow:0 0 10px #c8a03244}
+.subtitle{font-size:9px;color:#334455;letter-spacing:0.12em;margin-top:1px}
+.hdr-btns{display:flex;gap:5px;align-items:center}
+.tabclr{background:linear-gradient(180deg,#1a1c22,#0e1018);border:1px solid #2a2e3a;border-top:1px solid #3a3e4a;border-bottom:1px solid #080c10;color:#0055aa;padding:4px 8px;border-radius:3px;font-size:9px;box-shadow:0 2px 4px rgba(0,0,0,0.5)}
+.allclr{background:linear-gradient(180deg,#1a1c22,#0e1018);border:1px solid #2a2e3a;border-top:1px solid #3a3e4a;border-bottom:1px solid #080c10;color:#c8a032;padding:4px 8px;border-radius:3px;font-size:9px;box-shadow:0 2px 4px rgba(0,0,0,0.5)}
+/* ===== METER BAR ===== */
+#mbar{background:#040408;border-bottom:1px solid #0d0d1a;padding:3px 12px;display:flex;gap:10px;align-items:center}
+.mdot{width:6px;height:6px;border-radius:50%;animation:pulse 2s infinite}
+.mdot.grn{background:#00aa55;box-shadow:0 0 5px #00aa55}
+.mdot.blu{background:#0055aa;box-shadow:0 0 5px #0055aa;animation-delay:0.7s}
+.mdot.gld{background:#c8a032;box-shadow:0 0 5px #c8a032;animation-delay:1.4s}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.mlbl{font-size:9px;color:#223344;letter-spacing:0.08em}
+/* ===== TAB NAV — 浮き出たスタイル ===== */
+#nav{background:#0a0a14;border-bottom:1px solid #0d0d1a;padding:3px 5px}
+.nav-row{display:grid;gap:2px;margin-bottom:2px}
+.nav-row-1{grid-template-columns:repeat(7,1fr)}
+.nav-row-2{grid-template-columns:repeat(6,1fr)}
+.nb{background:linear-gradient(180deg,#1e2030 0%,#141622 40%,#0e1018 70%,#1a1c28 100%);border:1px solid #2a2e40;border-top:1px solid #3a3e52;border-bottom:2px solid #06080e;color:#667799;padding:6px 1px;font-size:9px;font-family:monospace;text-align:center;border-radius:4px;box-shadow:0 3px 5px rgba(0,0,0,0.7),0 1px 2px rgba(0,0,0,0.9),inset 0 1px 0 rgba(255,255,255,0.06);transition:all 0.08s}
+.nb:active{transform:translateY(1px);box-shadow:0 1px 2px rgba(0,0,0,0.7);border-bottom:1px solid #06080e}
+.nb.on{background:linear-gradient(180deg,#061830 0%,#0a2040 40%,#061428 70%,#0a1c38 100%);border:1px solid #0044aa;border-top:1px solid #0066cc;border-bottom:2px solid #002266;color:#4499ee;box-shadow:0 3px 8px rgba(0,60,160,0.4),0 1px 3px rgba(0,0,0,0.8),inset 0 1px 0 rgba(0,100,255,0.1),0 0 10px rgba(0,85,170,0.15);text-shadow:0 0 8px rgba(0,150,255,0.5)}
+/* ===== MAIN ===== */
+#main{padding:8px 12px 70px}
+/* ===== CARD ===== */
+.card{background:linear-gradient(180deg,#111118,#0d0d14);border:1px solid #1a1a2e;border-radius:4px;padding:11px 13px;margin-bottom:9px;box-shadow:inset 0 1px 0 #ffffff06}
+.card-alt{background:linear-gradient(180deg,#0d0d14,#080810)}
+.sh{font-size:10px;color:#0055aa;letter-spacing:0.12em;border-bottom:1px solid #1a1a2e;padding-bottom:6px;margin-bottom:9px;text-transform:uppercase;display:flex;align-items:center;gap:5px}
+.sh::before{content:'';width:2px;height:10px;background:#0055aa;border-radius:1px}
+.lbl{font-size:9px;color:#8899aa;letter-spacing:0.08em;margin-bottom:3px;text-transform:uppercase}
+/* ===== BUTTON A: グロー発光 ===== */
+.btns{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:8px}
+.b{background:linear-gradient(180deg,#1a1c22 0%,#0e1018 50%,#1a1c22 100%);border:1px solid #2a2e3a;border-top:1px solid #3a3e4a;border-bottom:1px solid #0a0c10;color:#8899aa;padding:7px 10px;border-radius:3px;font-size:11px;font-family:monospace;box-shadow:0 3px 5px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.06);transition:all 0.1s}
+.b.on{background:linear-gradient(180deg,#061228 0%,#0a1a3a 50%,#061228 100%);border:1px solid #0044aa;border-top:1px solid #0066cc;border-bottom:1px solid #002266;color:#4499ee;box-shadow:0 0 10px #0055aa44,0 3px 5px rgba(0,0,0,0.6),inset 0 1px 0 #0066ff15;text-shadow:0 0 8px #0066ff55}
+.b.grn.on{background:linear-gradient(180deg,#061a0e 0%,#0a2a18 50%,#061a0e 100%);border:1px solid #008844;border-top:1px solid #00bb55;border-bottom:1px solid #004422;color:#00dd66;box-shadow:0 0 10px #00aa5544,0 3px 5px rgba(0,0,0,0.6);text-shadow:0 0 8px #00ff6666}
+.b.gld.on{background:linear-gradient(180deg,#1a1006 0%,#2a1a0a 50%,#1a1006 100%);border:1px solid #aa8822;border-top:1px solid #ccaa33;border-bottom:1px solid #665500;color:#c8a032;box-shadow:0 0 10px #c8a03244,0 3px 5px rgba(0,0,0,0.6);text-shadow:0 0 8px #c8a03266}
+.b.red.on{background:linear-gradient(180deg,#1a0606 0%,#2a0a0a 50%,#1a0606 100%);border:1px solid #aa2222;border-top:1px solid #cc3333;border-bottom:1px solid #660000;color:#ee3333;box-shadow:0 0 10px #cc333344,0 3px 5px rgba(0,0,0,0.6);text-shadow:0 0 8px #ff222266}
+.b.sm{padding:5px 9px;font-size:10px}
+/* ===== BUTTON B: トグルスイッチ ===== */
+.tog-wrap{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.tog{width:44px;height:22px;background:linear-gradient(180deg,#0a0c12,#141620);border:1px solid #2a2e3a;border-radius:11px;position:relative;cursor:pointer;flex-shrink:0;box-shadow:inset 0 2px 4px #00000088;transition:all 0.2s}
+.tog.on{background:linear-gradient(180deg,#061228,#0a1a3a);border-color:#0055aa;box-shadow:inset 0 2px 4px #00000088,0 0 6px #0055aa44}
+.tog.grn.on{background:linear-gradient(180deg,#061a0e,#0a2a18);border-color:#008844;box-shadow:inset 0 2px 4px #00000088,0 0 6px #00aa5544}
+.tog::after{content:'';width:18px;height:18px;background:linear-gradient(180deg,#3a3e4a,#2a2e3a);border-radius:50%;position:absolute;top:1px;left:1px;transition:all 0.2s;box-shadow:0 1px 3px #00000066}
+.tog.on::after{left:25px;background:linear-gradient(180deg,#4499ee,#2266cc);box-shadow:0 1px 3px #00000066,0 0 5px #0055aa88}
+.tog.grn.on::after{left:25px;background:linear-gradient(180deg,#44ee88,#22aa55);box-shadow:0 1px 3px #00000066,0 0 5px #00aa5588}
+.tog-lbl{font-size:11px;color:#8899aa;transition:color 0.2s}
+.tog.on+.tog-lbl{color:#4499ee}
+.tog.grn.on+.tog-lbl{color:#00dd66}
+/* ===== BUTTON C: セグメントセレクター ===== */
+.seg{display:flex;gap:0;margin-bottom:8px}
+.seg .b{border-radius:0;border-right:none}
+.seg .b:first-child{border-radius:3px 0 0 3px}
+.seg .b:last-child{border-radius:0 3px 3px 0;border-right:1px solid #2a2e3a}
+.seg .b.on:last-child{border-right:1px solid #0044aa}
+/* ===== 7-SEGMENT DISPLAY ===== */
+.seg7-wrap{background:linear-gradient(180deg,#04060a,#060a0e);border:1px solid #1a1e2a;border-radius:4px;padding:6px 10px;display:inline-flex;gap:3px;align-items:center;box-shadow:inset 0 2px 8px rgba(0,0,0,0.7),inset 0 0 20px rgba(0,30,15,0.4);min-height:44px}
+.seg7-digit{position:relative;width:20px;height:36px;flex-shrink:0}
+.seg7-digit .s{position:absolute;background:#011a08}
+.seg7-digit .h{width:14px;height:3px;border-radius:1.5px;left:3px}
+.seg7-digit .v{width:3px;height:14px;border-radius:1.5px}
+.seg7-digit .sa{top:0}
+.seg7-digit .sb{top:2px;right:0}
+.seg7-digit .sc{top:20px;right:0}
+.seg7-digit .sd{bottom:0}
+.seg7-digit .se{top:20px;left:0}
+.seg7-digit .sf{top:2px;left:0}
+.seg7-digit .sg{top:16px}
+.seg7-digit .on{background:#00ff88;box-shadow:0 0 4px rgba(0,255,130,0.9),0 0 8px rgba(0,220,100,0.5)}
+.seg7-digit .on.red{background:#ff3333;box-shadow:0 0 4px rgba(255,50,50,0.9),0 0 8px rgba(220,30,30,0.5)}
+.seg7-digit .on.blu{background:#4499ff;box-shadow:0 0 4px rgba(80,160,255,0.9),0 0 8px rgba(50,120,220,0.5)}
+.seg7-digit .on.gld{background:#ffcc00;box-shadow:0 0 4px rgba(255,200,0,0.9),0 0 8px rgba(220,160,0,0.5)}
+.seg7-dot{width:4px;height:4px;border-radius:50%;background:#011a08;align-self:flex-end;margin-bottom:2px;flex-shrink:0}
+.seg7-dot.on{background:#00ff88;box-shadow:0 0 4px rgba(0,255,130,0.9)}
+.seg7-lbl{font-size:9px;color:#00aa55;align-self:flex-end;margin-bottom:2px;margin-left:3px;text-shadow:0 0 6px rgba(0,200,80,0.5)}
+/* ===== NUMPAD v3: 比率2:1 ===== */
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;max-width:180px;margin-bottom:6px}
+.npbtn{aspect-ratio:2/1;min-height:34px;background:linear-gradient(180deg,#1e2028 0%,#141620 35%,#0e1018 65%,#1a1c24 100%);border:1px solid #2a2e3c;border-top:1px solid #3a3e4e;border-bottom:2px solid #080a10;border-radius:4px;color:#8899aa;font-weight:bold;font-size:14px;font-family:monospace;text-align:center;cursor:pointer;box-shadow:0 3px 6px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.07);transition:all 0.08s;display:flex;align-items:center;justify-content:center}
+.npbtn:active{transform:translateY(1px);box-shadow:0 1px 3px rgba(0,0,0,0.6);border-bottom:1px solid #080a10}
+.npbtn.del{color:#cc4444;font-size:11px}
+/* ===== RESULT BOX: グロス外枠 ===== */
+.res{border-radius:6px;padding:12px;margin-bottom:9px;border:1px solid transparent}
+.res.neu{background:linear-gradient(#0d0d14,#0d0d14) padding-box,linear-gradient(135deg,rgba(255,255,255,0.12) 0%,rgba(255,255,255,0.02) 40%,rgba(0,0,0,0) 60%,rgba(255,255,255,0.06) 100%) border-box;box-shadow:0 0 0 1px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,255,255,0.04)}
+.res.blu{background:linear-gradient(#080e1a,#0a1220) padding-box,linear-gradient(135deg,rgba(0,150,255,0.35) 0%,rgba(0,80,180,0.08) 40%,rgba(0,0,0,0) 60%,rgba(0,100,220,0.18) 100%) border-box;box-shadow:0 0 12px rgba(0,85,170,0.15),0 0 0 1px rgba(0,0,0,0.8),inset 0 1px 0 rgba(0,100,255,0.06)}
+.res.grn{background:linear-gradient(#080e0a,#0a1a0e) padding-box,linear-gradient(135deg,rgba(0,200,100,0.35) 0%,rgba(0,120,60,0.08) 40%,rgba(0,0,0,0) 60%,rgba(0,180,80,0.18) 100%) border-box;box-shadow:0 0 12px rgba(0,170,80,0.15),0 0 0 1px rgba(0,0,0,0.8),inset 0 1px 0 rgba(0,220,80,0.06)}
+.res.red{background:linear-gradient(#140808,#1c0a0a) padding-box,linear-gradient(135deg,rgba(220,60,60,0.35) 0%,rgba(150,30,30,0.08) 40%,rgba(0,0,0,0) 60%,rgba(200,50,50,0.18) 100%) border-box;box-shadow:0 0 12px rgba(200,50,50,0.15),0 0 0 1px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,60,60,0.06)}
+.res.gld{background:linear-gradient(#120e04,#1a1206) padding-box,linear-gradient(135deg,rgba(220,170,50,0.45) 0%,rgba(160,120,30,0.08) 40%,rgba(0,0,0,0) 60%,rgba(200,160,40,0.25) 100%) border-box;box-shadow:0 0 12px rgba(200,160,40,0.15),0 0 0 1px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,200,50,0.07)}
+.rmain{border-radius:2px;padding:9px 12px;margin:7px 0;font-size:14px;font-weight:bold;letter-spacing:0.04em}
+.rnote{font-size:11px;margin-bottom:4px;padding-left:6px;border-left:2px solid #1a1a2e;color:#8899aa}
+.rrow{display:flex;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.rarr{color:#1a1a2e;font-size:18px;margin:0 3px}
+/* 残留FP */
+.resfp{background:linear-gradient(180deg,#0a1a0a,#061006);border:2px solid #00aa55;border-radius:4px;padding:9px 13px;margin-top:7px}
+/* SW行 */
+.swrow{display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap}
+.swlbl{min-width:130px;font-size:11px;color:#8899aa}
+.cb{width:34px;height:34px;background:linear-gradient(180deg,#1a1c22,#0e1018);border:1px solid #2a2e3a;border-bottom:1px solid #0a0c10;color:#8899aa;border-radius:3px;font-size:14px;font-family:monospace;box-shadow:0 2px 4px rgba(0,0,0,0.5)}
+.cb.on{background:linear-gradient(180deg,#061228,#0a1a3a);border-color:#0055aa;color:#4499ee}
+.cnum{min-width:20px;text-align:center;font-size:13px;font-weight:bold}
+.cnum-panel{background:linear-gradient(180deg,#020a05,#04140a);border:1px solid #0a2a14;border-radius:3px;padding:3px 6px;display:inline-flex;gap:1px;align-items:center;box-shadow:inset 0 1px 4px rgba(0,0,0,0.7),inset 0 0 10px rgba(0,60,20,0.35);min-width:24px;justify-content:center}
+.cnum-panel .seg7-digit{width:11px;height:18px}
+.cnum-panel .seg7-digit .h{width:7px;height:1.8px;left:2px}
+.cnum-panel .seg7-digit .v{width:1.8px;height:7px}
+.cnum-panel .seg7-digit .sb{top:1px;right:0}
+.cnum-panel .seg7-digit .sc{top:9.5px;right:0}
+.cnum-panel .seg7-digit .sd{bottom:0}
+.cnum-panel .seg7-digit .se{top:9.5px;left:0}
+.cnum-panel .seg7-digit .sf{top:1px;left:0}
+.cnum-panel .seg7-digit .sg{top:8px}
+/* LOS行 */
+.lrow{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.llbl{min-width:105px;font-size:11px;color:#8899aa}
+/* グループカード */
+.gc{background:#0d0d14;border:1px solid #1a1a2e;border-left:2px solid #0055aa;border-radius:3px;padding:9px 11px;margin-bottom:7px}
+.gh{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.ghl{color:#0055aa;font-size:11px;font-weight:bold}
+.delbtn{background:transparent;border:1px solid #cc333344;color:#cc3333;padding:1px 7px;border-radius:2px;font-size:10px}
+/* サマリ */
+.sum{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}
+.sumcard{background:linear-gradient(180deg,#111118,#0d0d14);border:1px solid #1a1a2e;border-radius:4px;padding:9px}
+/* notebox */
+.notebox{background:#0d0d14;border:1px solid #1a1a2e;border-radius:3px;padding:6px 9px;margin-bottom:9px;font-size:10px;display:grid;grid-template-columns:auto 1fr;gap:3px 8px;align-items:center;color:#8899aa}
+/* ユニットカード */
+.uc{background:#0d0d14;border:1px solid #1a1a2e;border-left:2px solid #0055aa;border-radius:3px;padding:7px 9px;margin-bottom:5px}
+.ul{font-size:13px;font-weight:bold}
+.us{display:flex;gap:10px;margin-top:3px;font-size:10px;color:#8899aa;flex-wrap:wrap}
+/* シナリオ */
+.scbtn{background:linear-gradient(180deg,#1a1c22,#0e1018);border:1px solid #1a1a2e;border-bottom:1px solid #0a0c10;border-radius:3px;padding:7px 9px;margin:2px;cursor:pointer;text-align:left;box-shadow:0 2px 4px rgba(0,0,0,0.4)}
+.scbtn.on{background:linear-gradient(180deg,#061228,#0a1a3a);border-color:#0055aa}
+.vbox{background:#0d0d14;border:1px solid #0055aa22;border-radius:3px;padding:7px;margin-bottom:7px;font-size:12px}
+.ssr{background:#0d0d14;border:1px solid #c8a03222;border-radius:3px;padding:5px 7px;margin-bottom:4px;font-size:11px}
+/* addbtn */
+.addbtn{width:100%;background:transparent;border:1px dashed #1a1a2e;color:#8899aa;padding:7px;border-radius:3px;font-size:12px;font-family:monospace;margin-top:3px}
+.resetbtn{background:transparent;border:1px solid #1a1a2e;color:#8899aa;padding:4px 13px;border-radius:2px;font-size:11px;font-family:monospace;margin-top:7px}
+.judgbtn{width:100%;background:linear-gradient(180deg,#0a1a3a,#061228);border:1px solid #0055aa;color:#4499ee;padding:10px;border-radius:2px;font-size:13px;font-weight:bold;font-family:monospace;letter-spacing:0.04em;box-shadow:0 0 8px #0055aa22;margin-top:6px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,#8899aa22,transparent);margin:9px 0}
+.infobox{background:#0a0a14;border:1px solid #0055aa22;border-radius:3px;padding:8px 10px;margin-bottom:8px;font-size:11px;color:#8899aa}
+.infobox.grn{border-color:#00aa5522;background:#0a140a}
+.infobox.gld{border-color:#c8a03222;background:#14100a}
+/* Tables */
+.ift-table{width:100%;border-collapse:collapse;font-size:10px;margin-bottom:8px}
+.ift-table th{background:#0a0a14;border:1px solid #1a1a2e;padding:4px 5px;color:#0055aa;text-align:center;font-weight:bold}
+.ift-table td{background:#040408;border:1px solid #1a1a2e;padding:3px 5px;text-align:center;color:#8899aa}
+.ift-table td.mc{color:#c8a032}.ift-table td.kia{color:#cc3333}.ift-table td.k{color:#cc8800}.ift-table td.ptc{color:#00aa55}
+.mv-table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:8px}
+.mv-table th{background:#0a0a14;border:1px solid #1a1a2e;padding:4px 7px;color:#0055aa;text-align:left}
+.mv-table td{background:#040408;border:1px solid #1a1a2e;padding:3px 7px;color:#ccddee}
+.mv-table td.v{color:#c8a032;text-align:right}
+#ftr{text-align:center;color:#0d0d1a;font-size:9px;padding:10px;border-top:1px solid #0d0d1a;letter-spacing:0.1em}
+
+
+/* ===== RETRO NUMPAD/DICE (3:2, ABC labels, RED/WHITE labels) ===== */
+.rseg{position:relative;width:14px;height:24px;flex-shrink:0}
+.rseg .s{position:absolute;background:#1a0000}
+.rseg .h{width:10px;height:2.2px;border-radius:1.2px;left:2px}
+.rseg .v{width:2.2px;height:9.5px;border-radius:1.2px}
+.rseg .sa{top:0}.rseg .sb{top:2px;right:0}.rseg .sc{top:13.5px;right:0}
+.rseg .sd{bottom:0}.rseg .se{top:13.5px;left:0}.rseg .sf{top:2px;left:0}.rseg .sg{top:11px}
+.rseg .on.wht{background:#f5f8ff;box-shadow:0 0 3px rgba(235,240,255,0.9),0 0 7px rgba(210,225,255,0.5)}
+.rseg .on.red{background:#ff2200;box-shadow:0 0 3px rgba(255,50,0,0.9),0 0 7px rgba(220,30,0,0.5)}
+
+.rbtn{
+  background:linear-gradient(145deg,#2a2a2a 0%,#1a1a1a 50%,#0e0e0e 100%);
+  border:2px solid #3a3a3a;border-top:2px solid #4a4a4a;border-bottom:3px solid #050505;
+  border-radius:8px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  box-shadow:0 4px 8px rgba(0,0,0,0.7),0 2px 3px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.08);
+  transition:all 0.06s;position:relative;overflow:hidden;
+  aspect-ratio:3/2;min-height:38px;
+}
+.rbtn::before{
+  content:'';position:absolute;top:2px;left:3px;right:3px;height:30%;
+  background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent);
+  border-radius:5px 5px 0 0;
+}
+.rbtn:active{transform:translateY(2px);box-shadow:0 1px 3px rgba(0,0,0,0.7),inset 0 2px 4px rgba(0,0,0,0.4)}
+.rbtn.on{
+  background:linear-gradient(145deg,#1a0000 0%,#0e0000 50%,#080000 100%);
+  border-color:#cc2200;border-top-color:#ee3300;
+  box-shadow:0 4px 8px rgba(180,20,0,0.5),0 0 12px rgba(220,40,0,0.2);
+}
+.rbtn.on-w{
+  background:linear-gradient(145deg,#1a1a22 0%,#101015 50%,#0a0a0c 100%);
+  border-color:#5566aa;border-top-color:#6677cc;
+  box-shadow:0 4px 8px rgba(80,90,160,0.4),0 0 12px rgba(100,110,200,0.2);
+}
+.rbtn.del{background:linear-gradient(145deg,#1a2a44 0%,#0e1a30 50%,#081020 100%);border-color:#2244aa;border-top-color:#3355bb}
+.rbtn.del:active{background:linear-gradient(145deg,#0a1a55,#061044)}
+.r-abc{font-size:5.5px;color:#665544;letter-spacing:0.1em;text-transform:uppercase;font-family:Arial,sans-serif;font-weight:bold}
+.r-dielbl{font-size:6px;letter-spacing:0.06em;text-transform:uppercase;font-family:Arial,sans-serif;font-weight:bold}
+.r-dielbl.red{color:#774433}
+.r-dielbl.wht{color:#556677}
+.rbtn.on .r-dielbl.red{color:#ee5533}
+.rbtn.on-w .r-dielbl.wht{color:#aabbee}
+.r-clrlbl{font-size:9px;color:#88aaff;letter-spacing:0.04em}
+.r-bslbl{font-size:12px;color:#88aaff}
+
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;max-width:190px;margin-bottom:6px}
+.rdbs{display:flex;gap:3px;flex-wrap:wrap;margin-top:5px}
+.rdbs .rbtn{width:46px}
+
+/* =====================================================
+   ASLSK TACTICAL WORKSTATION v8.0 REAL HARDWARE EDITION
+   Visual-only overlay. Original v5b logic remains unchanged.
+   Goal: closer to real front-line field radio / armored command panel.
+   ===================================================== */
+:root{
+  --rh-paper:#e1d8bd;
+  --rh-muted:#b9ae94;
+  --rh-amber:#dca23d;
+  --rh-amber2:#ffd982;
+  --rh-brass:#bd8c34;
+  --rh-brass2:#ecc267;
+  --rh-rust:#8b4821;
+  --rh-rust2:#c06a2b;
+  --rh-rust3:#431d10;
+  --rh-oil:#050403;
+  --rh-green:#a9bc7d;
+  --rh-red:#d4664e;
+}
+
+/* whole body: cast steel + grime */
+body{
+  background:
+    radial-gradient(circle at 5% 4%, rgba(255,215,135,.10), transparent 19%),
+    radial-gradient(circle at 94% 6%, rgba(139,72,33,.35), transparent 23%),
+    radial-gradient(circle at 9% 82%, rgba(94,42,22,.33), transparent 22%),
+    radial-gradient(ellipse at 62% 28%, rgba(5,4,3,.37), transparent 18%),
+    radial-gradient(ellipse at 47% 62%, rgba(0,0,0,.22), transparent 22%),
+    linear-gradient(180deg,#4a5156 0%,#2b3236 35%,#121617 100%) !important;
+  color:var(--rh-paper) !important;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Courier New",monospace !important;
+}
+
+/* scratched cast metal grain */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-2;
+  background:
+    repeating-linear-gradient(97deg,rgba(255,255,255,.035) 0 1px,transparent 1px 7px),
+    repeating-linear-gradient(7deg,rgba(0,0,0,.38) 0 1px,transparent 1px 6px),
+    repeating-linear-gradient(180deg,transparent 0 24px,rgba(72,31,14,.18) 25px 29px,transparent 30px 54px),
+    linear-gradient(90deg,rgba(0,0,0,.36),transparent 25%,transparent 72%,rgba(0,0,0,.44));
+  opacity:.60;
+}
+
+/* stains and old oil */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  background:
+    radial-gradient(ellipse at 9% 13%, rgba(190,94,38,.33), transparent 10%),
+    radial-gradient(ellipse at 94% 25%, rgba(155,72,32,.31), transparent 12%),
+    radial-gradient(ellipse at 16% 92%, rgba(155,72,32,.38), transparent 16%),
+    radial-gradient(ellipse at 85% 86%, rgba(63,27,16,.48), transparent 18%),
+    radial-gradient(ellipse at 48% 42%, rgba(0,0,0,.40), transparent 13%),
+    radial-gradient(ellipse at 72% 63%, rgba(8,6,4,.34), transparent 15%),
+    linear-gradient(180deg, transparent 0 10%, rgba(0,0,0,.10) 23%, transparent 42%, rgba(0,0,0,.12) 78%, transparent);
+  mix-blend-mode:multiply;
+  opacity:.58;
+}
+
+/* Header: real metal plate */
+#hdr{
+  background:
+    radial-gradient(ellipse at 70% 12%, rgba(0,0,0,.31), transparent 20%),
+    radial-gradient(ellipse at 16% 84%, rgba(139,72,33,.42), transparent 22%),
+    linear-gradient(90deg,rgba(139,72,33,.54),transparent 14%,transparent 86%,rgba(139,72,33,.48)),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.048) 0 1px,transparent 1px 13px),
+    linear-gradient(180deg,#63696e 0%,#394147 42%,#1a2023 100%) !important;
+  border:0 !important;
+  border-bottom:9px solid #030404 !important;
+  padding:17px 18px 16px !important;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.15),
+    inset 0 -5px 0 rgba(0,0,0,.86),
+    0 9px 24px rgba(0,0,0,.78) !important;
+}
+#hdr::before{
+  content:"";
+  position:absolute;
+  left:8px;right:8px;bottom:-8px;height:11px;
+  background:
+    radial-gradient(circle at 10px 50%, #080909 0 3.5px, transparent 4px),
+    radial-gradient(circle at 27px 50%, #252b2e 0 2px, transparent 2.6px),
+    repeating-linear-gradient(90deg,#030404 0 8px,#202629 8px 15px,#060707 15px 24px);
+  border-radius:8px;
+}
+#hdr::after{
+  content:"FRONTLINE REPAIRED FIELD PLATE";
+  position:absolute;
+  right:52px;
+  bottom:9px;
+  padding:2px 8px;
+  color:#211305;
+  font-size:7px;
+  letter-spacing:.14em;
+  background:linear-gradient(180deg,#c99b49,#8d5d1d 55%,#4e300d);
+  border:1px solid #362006;
+  border-radius:2px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 1px 4px rgba(0,0,0,.74);
+  filter:sepia(.35) saturate(.8);
+}
+.logo{
+  color:var(--rh-amber2) !important;
+  font-size:15px !important;
+  letter-spacing:.17em !important;
+  text-shadow:0 0 13px rgba(220,162,61,.58),0 2px 0 #000 !important;
+}
+.logo::before,.logo::after{
+  content:"";
+  position:absolute;
+  top:15px;
+  width:18px;height:18px;border-radius:50%;
+  background:
+    radial-gradient(circle at 34% 28%,#d2d2c8,#454c50 49%,#030404 100%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.30),0 0 0 2px rgba(0,0,0,.66),0 2px 7px #000;
+}
+.logo::before{left:8px}.logo::after{right:8px}
+.subtitle{color:#c5bca4 !important;font-size:9px !important}
+.hdr-btns span{color:var(--rh-amber2) !important}
+
+#mbar{
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(0,0,0,.32), transparent 35%),
+    linear-gradient(180deg,#22292c,#0c0e0f) !important;
+  border-bottom:7px solid #040505 !important;
+  padding:6px 12px !important;
+}
+.mlbl{color:#beb39a !important}
+.mdot.grn{background:var(--rh-green) !important;box-shadow:0 0 10px var(--rh-green) !important}
+.mdot.blu{background:var(--rh-amber) !important;box-shadow:0 0 10px var(--rh-amber) !important}
+.mdot.gld{background:#c87532 !important;box-shadow:0 0 10px #c87532 !important}
+
+/* Real hardware dashboard */
+.rh-dashboard{
+  background:
+    radial-gradient(ellipse at 22% 18%, rgba(0,0,0,.40), transparent 15%),
+    radial-gradient(ellipse at 88% 38%, rgba(0,0,0,.31), transparent 16%),
+    linear-gradient(90deg,rgba(139,72,33,.43),transparent 15%,transparent 85%,rgba(139,72,33,.38)),
+    repeating-linear-gradient(100deg,rgba(255,255,255,.033) 0 1px,transparent 1px 9px),
+    linear-gradient(180deg,#485158,#1b2226);
+  border-top:9px solid #040505;
+  border-bottom:10px solid #020303;
+  padding:13px 8px 17px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.09),inset 0 -22px 38px rgba(0,0,0,.62),0 9px 24px rgba(0,0,0,.58);
+}
+.rh-dashboard::before,.rh-dashboard::after{
+  content:"";
+  position:absolute;
+  left:8px;right:8px;height:10px;border-radius:8px;
+  background:
+    radial-gradient(circle at 9px 50%,#080909 0 3px,transparent 3.6px),
+    repeating-linear-gradient(90deg,#030404 0 7px,#202629 7px 14px,#060707 14px 22px);
+  opacity:.99;
+}
+.rh-dashboard::before{top:3px}.rh-dashboard::after{bottom:3px}
+.rh-oil-layer{
+  position:absolute;inset:0;pointer-events:none;opacity:.82;
+  background:
+    radial-gradient(ellipse at 18% 42%, rgba(0,0,0,.42), transparent 12%),
+    radial-gradient(ellipse at 66% 34%, rgba(5,4,3,.38), transparent 14%),
+    linear-gradient(180deg, transparent 0 22%, rgba(0,0,0,.24) 24%, transparent 38%),
+    radial-gradient(ellipse at 83% 80%, rgba(0,0,0,.40), transparent 16%),
+    repeating-linear-gradient(180deg, transparent 0 35px, rgba(90,38,14,.20) 36px 39px, transparent 40px 67px);
+  mix-blend-mode:multiply;
+}
+.rh-nameplate{
+  margin:1px auto 8px;
+  width:max-content;
+  max-width:94%;
+  padding:4px 14px;
+  color:#1f1204;
+  font-size:10px;
+  letter-spacing:.14em;
+  text-shadow:0 1px 0 rgba(255,255,255,.18);
+  background:linear-gradient(90deg,#5e3910,#b88834,#cfaa58,#7c4d17);
+  border:1px solid #342006;
+  border-radius:3px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.20),0 2px 7px rgba(0,0,0,.78);
+  filter:sepia(.35) saturate(.75);
+}
+.rh-rivet-grid{
+  display:grid;
+  grid-template-columns:repeat(10,1fr);
+  gap:4px;
+  margin:0 5px 8px;
+}
+.rh-rivet{
+  width:13px;height:13px;border-radius:50%;justify-self:center;position:relative;
+  background:radial-gradient(circle at 35% 30%,#d1d1c6 0%,#636b6e 32%,#171b1d 62%,#020303 100%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.24),0 0 0 1px rgba(0,0,0,.88),0 2px 5px rgba(0,0,0,.90);
+}
+.rh-rivet::after{
+  content:"";
+  position:absolute;
+  left:4px;top:10px;width:10px;height:43px;
+  background:linear-gradient(180deg,rgba(192,106,43,.82),rgba(139,72,33,.40),rgba(35,13,6,.08),transparent);
+  transform:rotate(6deg);
+  opacity:.95;
+  border-radius:50%;
+}
+.rh-gauges{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+  position:relative;
+  z-index:1;
+}
+.rh-gauge{
+  min-height:116px;
+  border:2px solid #020303;
+  border-radius:10px;
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 70% 12%, rgba(0,0,0,.30), transparent 22%),
+    radial-gradient(circle at 50% 9%,rgba(255,217,130,.25),transparent 38%),
+    linear-gradient(165deg,rgba(255,255,255,.11),transparent 30%),
+    radial-gradient(circle at 50% 80%,#040505 0 7px,transparent 8px),
+    linear-gradient(180deg,#3b4449 0%,#161d20 60%,#080a0b 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 -18px 34px rgba(0,0,0,.70),0 6px 17px rgba(0,0,0,.72);
+}
+.rh-gauge::before{
+  content:"";
+  position:absolute;left:7%;right:7%;bottom:25px;height:63px;
+  border-top:3px solid rgba(255,217,130,.84);
+  border-radius:64% 64% 0 0;
+  box-shadow:0 -2px 13px rgba(220,162,61,.28);
+}
+.rh-gauge::after{
+  content:"";
+  position:absolute;width:3px;height:56px;left:50%;bottom:27px;
+  transform-origin:bottom center;
+  transform:translateX(-50%) rotate(var(--needle,0deg));
+  background:linear-gradient(180deg,var(--rh-amber2),#8b4821 68%,#2b1008);
+  border-radius:4px;
+  box-shadow:0 0 13px rgba(255,217,130,.86);
+}
+.rh-glass{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(110deg, transparent 0 7px, rgba(255,255,255,.06) 8px 9px, transparent 10px 31px),
+    radial-gradient(ellipse at 28% 20%, rgba(255,255,255,.14), transparent 18%),
+    radial-gradient(ellipse at 78% 72%, rgba(0,0,0,.20), transparent 24%);
+  opacity:.72;
+}
+.rh-gauge .ttl{
+  position:absolute;top:8px;left:6px;right:6px;text-align:center;
+  color:#d5c9ac;
+  font-size:9px;
+  letter-spacing:.12em;
+  text-shadow:0 1px 0 #000;
+}
+.rh-gauge .ticks{
+  position:absolute;left:8px;right:8px;bottom:34px;display:flex;justify-content:space-between;
+  font-size:7px;
+  color:#9b9075;
+}
+.rh-gauge .val{
+  position:absolute;left:0;right:0;bottom:6px;text-align:center;
+  color:var(--rh-amber2);
+  font-size:10px;
+  text-shadow:0 0 10px rgba(220,162,61,.60);
+}
+.rh-gauge.drm{--needle:37deg}.rh-gauge.los{--needle:-43deg}.rh-gauge.fp{--needle:17deg}.rh-gauge.mor{--needle:-15deg}
+
+/* Navigation and controls: grimy cast metal */
+#nav{
+  background:
+    radial-gradient(ellipse at 70% 10%, rgba(0,0,0,.30), transparent 34%),
+    linear-gradient(90deg,rgba(139,72,33,.30),transparent 16%,transparent 84%,rgba(139,72,33,.28)),
+    linear-gradient(180deg,#30383d,#111516) !important;
+  border-top:7px solid #030404 !important;
+  border-bottom:9px solid #020303 !important;
+  padding:8px 7px 9px !important;
+}
+.nav-row{gap:5px !important;margin-bottom:5px !important}
+.nb{
+  min-height:50px !important;
+  background:
+    radial-gradient(ellipse at 86% 80%, rgba(139,72,33,.31), transparent 25%),
+    linear-gradient(155deg,rgba(255,255,255,.08),transparent 18%),
+    linear-gradient(180deg,#515a60 0%,#2c3438 48%,#111516 100%) !important;
+  border:1px solid #030404 !important;border-top:1px solid #7b848a !important;border-bottom:5px solid #010202 !important;
+  color:#dad3c1 !important;
+  border-radius:4px !important;
+  font-size:10px !important;
+  text-shadow:0 2px 0 #000;
+  box-shadow:0 5px 13px rgba(0,0,0,.82),inset 0 1px 0 rgba(255,255,255,.13),inset 0 -8px 16px rgba(0,0,0,.36) !important;
+  position:relative;
+}
+.nb::before{
+  content:"";position:absolute;left:5px;top:5px;width:7px;height:7px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#b5b9ae,#293033 64%,#030404);
+}
+.nb::after{
+  content:"";position:absolute;right:4px;bottom:4px;width:18px;height:9px;
+  background:radial-gradient(ellipse at center,rgba(139,72,33,.48),transparent 70%);
+  opacity:.90;
+}
+.nb.on{
+  color:var(--rh-amber2) !important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,217,130,.32),transparent 50%),
+    radial-gradient(ellipse at 80% 80%,rgba(0,0,0,.28),transparent 32%),
+    linear-gradient(180deg,#5d4b2e 0%,#2a2115 55%,#0d0b08 100%) !important;
+  border-color:#704916 !important;border-top-color:#ecc06a !important;
+  box-shadow:0 0 22px rgba(220,162,61,.34),0 5px 13px rgba(0,0,0,.82),inset 0 1px 0 rgba(255,226,150,.24) !important;
+}
+
+/* Real hardware panels */
+#main{max-width:820px;margin:0 auto;padding:12px 10px 98px !important}
+.card,.sumcard,.gc,.uc,.vbox,.ssr,.infobox,.notebox{
+  background:
+    radial-gradient(ellipse at 96% 14%,rgba(139,72,33,.33),transparent 18%),
+    radial-gradient(ellipse at 7% 92%,rgba(91,43,24,.34),transparent 20%),
+    radial-gradient(ellipse at 60% 45%,rgba(0,0,0,.22),transparent 20%),
+    repeating-linear-gradient(104deg,rgba(255,255,255,.022) 0 1px,transparent 1px 9px),
+    linear-gradient(180deg,#343d42 0%,#1a2023 100%) !important;
+  border:1px solid #030404 !important;border-left:4px solid rgba(220,162,61,.76) !important;border-radius:5px !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -2px 0 rgba(0,0,0,.60),0 7px 20px rgba(0,0,0,.56) !important;
+}
+.card{position:relative;overflow:hidden}
+.card::before{
+  content:"";position:absolute;left:7px;right:7px;top:4px;height:7px;border-radius:6px;
+  background:
+    radial-gradient(circle at 8px 50%,#0d0f10 0 2px,transparent 2.4px),
+    repeating-linear-gradient(90deg,#030404 0 7px,#202427 7px 13px,#060707 13px 21px);
+  opacity:.83;
+}
+.card::after{
+  content:"";position:absolute;right:8px;top:8px;width:11px;height:11px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#c7c8bd,#3a4245 52%,#030404);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.24),0 0 0 1px rgba(0,0,0,.86);
+}
+.sh{
+  color:var(--rh-amber2) !important;border-bottom:1px dashed rgba(220,162,61,.38) !important;font-size:11px !important;margin-top:2px;
+  text-shadow:0 0 11px rgba(220,162,61,.38),0 1px 0 #000;
+}
+.sh::before{background:linear-gradient(180deg,var(--rh-rust2),var(--rh-rust3)) !important;width:4px !important;height:14px !important}
+.lbl,.swlbl,.llbl,.rnote,.us,.mlbl,.tog-lbl{color:#bbb19a !important}
+
+/* dirty cast controls */
+.b,.cb,.scbtn,.resetbtn,.addbtn,.tabclr,.allclr,.judgbtn,.npbtn,.rbtn,.delbtn{
+  background:
+    radial-gradient(ellipse at 86% 80%, rgba(139,72,33,.32), transparent 25%),
+    linear-gradient(155deg,rgba(255,255,255,.08),transparent 18%),
+    linear-gradient(180deg,#515a60 0%,#2c3438 48%,#111516 100%) !important;
+  border:1px solid #030404 !important;border-top:1px solid #7b848a !important;border-bottom:5px solid #010202 !important;
+  color:#dad3c1 !important;border-radius:5px !important;text-shadow:0 1px 0 #000;
+  box-shadow:0 5px 13px rgba(0,0,0,.76),inset 0 1px 0 rgba(255,255,255,.13) !important;
+}
+.b.on,.cb.on,.scbtn.on,.judgbtn{
+  color:var(--rh-amber2) !important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,217,130,.32),transparent 50%),
+    radial-gradient(ellipse at 80% 80%,rgba(0,0,0,.28),transparent 32%),
+    linear-gradient(180deg,#5d492b,#21180f) !important;
+  border-color:#704916 !important;border-top-color:#ecc06a !important;
+  box-shadow:0 0 17px rgba(220,162,61,.34),0 5px 13px rgba(0,0,0,.76),inset 0 1px 0 rgba(255,226,150,.24) !important;
+}
+.b.grn.on{color:#cadb92 !important;border-color:#819152 !important}
+.b.red.on{color:#e06d53 !important;border-color:#863521 !important}
+
+/* radio lever toggles */
+.tog{
+  width:66px !important;height:33px !important;border-radius:4px !important;
+  background:linear-gradient(180deg,#0c0e0f,#293034) !important;border:1px solid #010202 !important;
+  box-shadow:inset 0 5px 12px rgba(0,0,0,.92),0 1px 0 rgba(255,255,255,.05) !important;
+}
+.tog::after{
+  width:28px !important;height:28px !important;top:1px !important;left:1px !important;border-radius:4px !important;
+  background:linear-gradient(180deg,#c8c4b6,#5c6568 58%,#1e2325) !important;
+  box-shadow:0 2px 6px rgba(0,0,0,.92),inset 0 1px 0 rgba(255,255,255,.22) !important;
+}
+.tog.on::after,.tog.grn.on::after{
+  left:35px !important;background:linear-gradient(180deg,#ffdc92,#9b6128 64%,#32150a) !important;
+  box-shadow:0 0 13px rgba(220,162,61,.64),inset 0 1px 0 rgba(255,255,255,.25) !important;
+}
+
+/* smoky amber glass displays */
+.seg7-wrap,.cnum-panel{
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,217,130,.15),transparent 60%),
+    radial-gradient(ellipse at 80% 70%,rgba(0,0,0,.38),transparent 28%),
+    linear-gradient(180deg,#060808,#010202) !important;
+  border:1px solid #000 !important;
+  box-shadow:inset 0 3px 17px rgba(0,0,0,.98),0 0 0 1px rgba(220,162,61,.14) !important;
+}
+.seg7-digit .on,.seg7-dot.on,.rseg .on.red,.rseg .on.wht{
+  background:var(--rh-amber2) !important;
+  box-shadow:0 0 6px rgba(255,217,130,.98),0 0 18px rgba(220,162,61,.60) !important;
+}
+.seg7-lbl{color:var(--rh-amber) !important}
+
+/* result/report */
+.res.neu,.res.blu,.res.grn,.res.red,.res.gld{
+  background:
+    radial-gradient(ellipse at 85% 20%,rgba(0,0,0,.24),transparent 25%) padding-box,
+    linear-gradient(180deg,#343d42,#181e21) padding-box,
+    linear-gradient(135deg,rgba(220,162,61,.58),rgba(0,0,0,0),rgba(139,72,33,.60)) border-box !important;
+  border:1px solid transparent !important;
+  box-shadow:0 7px 20px rgba(0,0,0,.64),inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+.rmain{
+  background:linear-gradient(180deg,#131617,#040505) !important;
+  color:var(--rh-amber2) !important;
+  border:1px solid rgba(220,162,61,.44);
+}
+.ift-table th,.mv-table th{background:#161a1d !important;color:var(--rh-amber2) !important;border-color:#040505 !important}
+.ift-table td,.mv-table td{background:#252c30 !important;color:#e1d8bd !important;border-color:#0f1214 !important}
+.ift-table td.mc,.ift-table td.ptc,.mv-table td.v{color:var(--rh-amber2) !important}
+.ift-table td.kia,.ift-table td.k{color:#e06d53 !important}
+#ftr{color:#a69a78 !important;border-top:9px solid #030404 !important;background:#121617;padding:15px 8px !important}
+
+@media(max-width:600px){
+  #hdr{padding:16px 14px !important}.logo{font-size:13px !important}.subtitle{font-size:8px !important}
+  #hdr::after{display:none}
+  .tabclr,.allclr{font-size:8px !important;padding:5px 6px !important}
+  .nav-row-1{grid-template-columns:repeat(4,1fr) !important}.nav-row-2{grid-template-columns:repeat(3,1fr) !important}
+  .nb{font-size:10px !important;min-height:51px !important}.b{font-size:12px !important;padding:9px 10px !important}
+  .card{padding:13px 12px !important}.rh-gauges{grid-template-columns:repeat(2,1fr)}.rh-gauge{min-height:104px}
+  .rh-nameplate{font-size:9px}
+}
+
+</style>
+</head>
+<body>
+<div id="hdr">
+  <div>
+    <div class="logo">FIELD TACTICAL CONSOLE</div>
+    <div class="subtitle">ASL STARTER KIT · REAL HARDWARE EDITION</div>
+  </div>
+  <div class="hdr-btns">
+    <button class="tabclr" onclick="TABCLR()">TAB CLR</button>
+    <button class="allclr" onclick="ALLCLR()">ALL CLR</button>
+    <span style="color:#334455;font-size:9px">v8.0</span>
+  </div>
+</div>
+<div id="mbar">
+  <div class="mdot grn"></div><span class="mlbl">READY</span>
+  <div class="mdot blu"></div><span class="mlbl">IFT LOADED</span>
+  <div class="mdot gld"></div><span class="mlbl">SK#1</span>
+</div>
+
+<div class="rh-dashboard" aria-label="real hardware armored dashboard">
+  <div class="rh-oil-layer"></div>
+  <div class="rh-nameplate">ASLSK · REAL HARDWARE FIELD CONSOLE</div>
+  <div class="rh-rivet-grid">
+    <span class="rh-rivet"></span><span class="rh-rivet"></span><span class="rh-rivet"></span><span class="rh-rivet"></span><span class="rh-rivet"></span>
+    <span class="rh-rivet"></span><span class="rh-rivet"></span><span class="rh-rivet"></span><span class="rh-rivet"></span><span class="rh-rivet"></span>
+  </div>
+  <div class="rh-gauges">
+    <div class="rh-gauge drm">
+      <div class="rh-glass"></div>
+      <div class="ttl">DRM METER</div>
+      <div class="ticks"><span>-3</span><span>0</span><span>+6</span></div>
+      <div class="val">TACTICAL DRM</div>
+    </div>
+    <div class="rh-gauge los">
+      <div class="rh-glass"></div>
+      <div class="ttl">LOS SIGNAL</div>
+      <div class="ticks"><span>CLR</span><span>HINDR</span><span>BLK</span></div>
+      <div class="val">LINE OF SIGHT</div>
+    </div>
+    <div class="rh-gauge fp">
+      <div class="rh-glass"></div>
+      <div class="ttl">FIREPOWER</div>
+      <div class="ticks"><span>1</span><span>8</span><span>36</span></div>
+      <div class="val">IFT POWER</div>
+    </div>
+    <div class="rh-gauge mor">
+      <div class="rh-glass"></div>
+      <div class="ttl">MORALE</div>
+      <div class="ticks"><span>BRK</span><span>PIN</span><span>GO</span></div>
+      <div class="val">UNIT STATE</div>
+    </div>
+  </div>
+</div>
+
+<div id="nav">
+  <div class="nav-row nav-row-1">
+    <button class="nb" onclick="TAB('rally')">🔄<br>回復</button>
+    <button class="nb" onclick="TAB('pfph')">🎯<br>準備射撃</button>
+    <button class="nb" onclick="TAB('move')">🚶<br>移動/DC</button>
+    <button class="nb" onclick="TAB('dff')">⚡<br>防御臨機</button>
+    <button class="nb" onclick="TAB('dfph')">🛡<br>防御射撃</button>
+    <button class="nb" onclick="TAB('afph')">💥<br>前進射撃</button>
+    <button class="nb" onclick="TAB('rout')">🏃<br>潰走</button>
+  </div>
+  <div class="nav-row nav-row-2">
+    <button class="nb" onclick="TAB('aph')">⚔<br>突撃</button>
+    <button class="nb" onclick="TAB('cc')">🗡<br>白兵戦</button>
+    <button class="nb" onclick="TAB('mc')">⚠<br>MC/PTC</button>
+    <button class="nb" onclick="TAB('ref')">📋<br>早見表</button>
+    <button class="nb" onclick="TAB('scen')">🗺<br>シナリオ</button>
+    <button class="nb" onclick="TAB('unit')">📦<br>ユニット</button>
+  </div>
+</div>
+<div id="main"></div>
+<div id="ftr">FIELD TACTICAL CONSOLE · ASLSK TACTICAL WORKSTATION v8.0 REAL HARDWARE · SK#1 INFANTRY</div>
+
+<script>
+
+// =====================================================
+// 7-SEGMENT DISPLAY ENGINE
+// =====================================================
+var SEG7={
+  '0':[1,1,1,1,1,1,0],'1':[0,1,1,0,0,0,0],'2':[1,1,0,1,1,0,1],
+  '3':[1,1,1,1,0,0,1],'4':[0,1,1,0,0,1,1],'5':[1,0,1,1,0,1,1],
+  '6':[1,0,1,1,1,1,1],'7':[1,1,1,0,0,0,0],'8':[1,1,1,1,1,1,1],
+  '9':[1,1,1,1,0,1,1],'-':[0,0,0,0,0,0,1],' ':[0,0,0,0,0,0,0],
+  '+':[0,0,0,0,0,0,1]
+};
+function mkSeg7(ch,color){
+  var s=SEG7[ch]||SEG7[' '];
+  var cc=color||'';
+  function seg(cls,on){
+    return '<div class="s '+cls+(on?' on'+(cc?' '+cc:''):'')+'" ></div>';
+  }
+  return '<div class="seg7-digit">'
+    +seg('h sa',s[0])+seg('v sb',s[1])+seg('v sc',s[2])
+    +seg('h sd',s[3])+seg('v se',s[4])+seg('v sf',s[5])+seg('h sg',s[6])
+    +'</div>';
+}
+function seg7(str,color,suffix){
+  var h='';
+  str=String(str);
+  for(var i=0;i<str.length;i++){
+    if(str[i]==='.')h+='<div class="seg7-dot on"></div>';
+    else h+=mkSeg7(str[i],color);
+  }
+  if(suffix)h+='<span class="seg7-lbl">'+suffix+'</span>';
+  return '<div class="seg7-wrap">'+h+'</div>';
+}
+// 数値→2桁7セグ(FP用)
+function seg7fp(n,suffix){
+  var s=String(Math.round(n));
+  if(s.length===1)s=' '+s;
+  return seg7(s,'',suffix||'FP');
+}
+// DR値→7セグ(色付き)
+function seg7dr(n,color){
+  var s=String(n);
+  if(s.length===1)s=' '+s;
+  return seg7(s,color||'');
+}
+// DRM値→7セグ(±表示)
+function seg7drm(n){
+  var s=n>=0?'+'+n:String(n);
+  if(s.length===2)s=' '+s;
+  var color=n<0?'grn':n>0?'red':'';
+  return seg7(s,color,'DRM');
+}
+// 士気値→7セグ
+function seg7mor(n){
+  return seg7(String(n),'blu','MOR');
+}
+
+var IFT_COLS=[0.5,2,4,6,8,12,16,20,24,30,36];
+var IFT_LBL=["1/2","2","4","6","8","12","16","20","24","30","36"];
+// IFT: 行=DR2〜12(idx0〜10), 列=FP列
+var IFT=[
+["1MC","K1", "K2", "1KIA","1KIA","1KIA","2KIA","2KIA","3KIA","4KIA","5KIA"],
+["1MC","1MC","2MC","K2","K2","K3","1KIA","1KIA","2KIA","3KIA","4KIA"],
+["MC", "1MC","1MC","2MC", "2MC", "3MC", "K3","K4","1KIA","2KIA","3KIA"],
+["PTC","MC", "1MC","1MC", "2MC", "2MC", "3MC", "4MC", "K4","1KIA","2KIA"],
+["-","PTC","MC", "1MC", "1MC", "2MC", "2MC", "3MC", "4MC", "K4","1KIA"],
+["-","-","PTC","MC","1MC", "1MC", "2MC", "2MC", "3MC", "4MC", "K4" ],
+["-","-","-","PTC", "MC","1MC", "1MC", "2MC", "2MC", "3MC", "4MC"],
+["-","-","-","-","PTC", "MC","1MC", "1MC", "2MC", "2MC", "3MC"],
+["-","-","-","-","-","PTC", "MC","1MC", "1MC", "2MC", "2MC"],
+["-","-","-","-","-","-","PTC", "MC","1MC", "1MC", "2MC"],
+["-","-","-","-","-","-","-","PTC", "MC","1MC", "1MC"]
+];
+var RES_TBL={0:[0,0,0,0],1:[1,0,0,0],2:[2,1,0,0],3:[2,1,0,0],4:[4,2,1,0],5:[6,4,2,1],6:[8,6,4,2],7:[8,6,4,2],8:[12,8,6,4],9:[12,8,6,4],10:[12,8,6,4]};
+var CCT_R=["<1:8","1:8","1:6","1:4","1:2","1:1","3:2","2:1","3:1","4:1","6:1","8:1","10:1",">10:1"];
+var CCT_N=[0,1,2,3,4,5,6,7,8,9,10,11,12,13];
+var SWT=[
+  {id:"lmg38",lbl:"LMG 3-8",fp:3,b:8,x:99,rof:0,pp:2},
+  {id:"lmg26",lbl:"LMG 2-6(ソ連)",fp:2,b:8,x:99,rof:0,pp:2},
+  {id:"mmg410",lbl:"MMG 4-10",fp:4,b:10,x:99,rof:2,pp:4},
+  {id:"mmg512",lbl:"MMG 5-12",fp:5,b:12,x:99,rof:2,pp:4},
+  {id:"hmg716",lbl:"HMG 7-16",fp:7,b:16,x:99,rof:2,pp:6},
+  {id:"hmg816",lbl:"HMG 8-16",fp:8,b:16,x:99,rof:2,pp:6},
+  {id:"ft241",lbl:"FT 24-1(火炎放射器)",fp:24,b:99,x:10,rof:0,pp:4}
+];
+var LOS_OBS=[
+  {id:"bush",lbl:"繁み",d:1},{id:"wht",lbl:"麦バタケ",d:1},
+  {id:"orch",lbl:"果樹園",d:1},{id:"wood",lbl:"林ヘクスサイド",d:1},
+  {id:"smk",lbl:"煙幕手榴弾",d:2},{id:"fsmk",lbl:"完全煙幕",d:3}
+];
+var TEM_LIST=[
+  {id:"open",lbl:"開豁地・道路",v:0},{id:"woods",lbl:"林",v:1},
+  {id:"wood_bld",lbl:"木造建物",v:2},{id:"stone_bld",lbl:"石造建物",v:3},
+  {id:"hedge",lbl:"生垣",v:1},{id:"hill",lbl:"丘",v:1}
+];
+var MOVE_COST=[
+  {ter:"開豁地",mf:1,inf:"1MF",note:""},
+  {ter:"道路(街路)",mf:0.5,inf:"1/2MF",note:"移動方向に沿った場合のみ"},
+  {ter:"林",mf:2,inf:"2MF",note:""},
+  {ter:"木造建物",mf:2,inf:"2MF",note:""},
+  {ter:"石造建物",mf:2,inf:"2MF",note:""},
+  {ter:"生垣(ヘクスサイド)",mf:1,inf:"+1MF",note:"越えるごとに追加"},
+  {ter:"丘(登坂)",mf:2,inf:"+1MF",note:"1段ごとに追加"},
+  {ter:"繁み",mf:2,inf:"2MF",note:""},
+  {ter:"果樹園",mf:2,inf:"2MF",note:"LOS妨害あり"},
+  {ter:"麦バタケ(6〜9月)",mf:1,inf:"1MF",note:"LOS妨害あり"}
+];
+var SW_PP=[
+  {lbl:"MMC(分隊)",ipc:3},{lbl:"HS(半個分隊)",ipc:2},
+  {lbl:"SMC(指揮官)",ipc:1}
+];
+var CASUAL_MAP={
+  USA:{"6-6-6(1)":"3-3-6(1)(HS)","5-4-6(2)":"2-2-6(2)(HS)","6-6-7(E)":"3-3-7(E)(HS)","7-4-7(E)":"3-4-7(E)(HS)","6-6-7(E) [2]":"3-3-7(E)(HS)"},
+  GER:{"5-4-8(E)":"2-4-8(E)(HS)","4-6-8(E)":"2-3-8(E)(HS)","4-6-7(1)":"2-3-7(1)(HS)","4-4-7(2)":"2-3-7(2)(HS)","4-3-6(C)":"2-2-6(C)(HS)"},
+  SOV:{"4-5-8(E)":"2-3-8(E)(HS)","4-4-7[1]":"2-2-7(1)(HS)","4-2-6(C)":"2-1-6(C)(HS)","5-2-7(1)":"2-1-7(1)(HS)"}
+};
+var ELR_MAP={
+  USA:{"7-4-7(E)":"6-6-6(1)","6-6-6(1)":"5-4-6(2)","6-6-7(E)":"3-3-7(E)(HS)"},
+  GER:{"5-4-8(E)":"4-4-7(2)","4-6-8(E)":"4-4-7(2)","4-6-7(1)":"2-3-7(2)(HS)","4-4-7(2)":"2-3-7(2)(HS)"},
+  SOV:{"4-5-8(E)":"4-4-7[1]","4-4-7[1]":"4-2-6(C)"}
+};
+var UNITS={
+  USA:{lbl:"🇺🇸 米軍",col:"#4477aa",
+    mmc:[
+      {lbl:"6-6-6(1)",fp:6,rng:6,mor:6,bm:8,smk:3,sr:false,ei:false,hs:false,af:true,green:false,note:"S3・S5登場"},
+      {lbl:"5-4-6(2)",fp:5,rng:4,mor:6,bm:7,smk:2,sr:false,ei:false,hs:false,af:true,green:false,note:"S4登場"},
+      {lbl:"7-4-7(E)",fp:7,rng:4,mor:7,bm:8,smk:3,sr:false,ei:true,hs:false,af:true,green:false,note:"S1・S4 士気値下線(ELR免除)"},
+      {lbl:"6-6-7(E)",fp:6,rng:6,mor:7,bm:7,smk:3,sr:false,ei:false,hs:false,af:true,green:false,note:"S4登場"},
+      {lbl:"6-6-7(E) [2]",fp:6,rng:6,mor:7,bm:8,smk:3,sr:true,ei:false,hs:false,af:true,green:false,note:"S5 自己回復"},
+      {lbl:"3-4-7(E)(HS)",fp:3,rng:4,mor:7,bm:7,smk:0,sr:true,ei:false,hs:true,af:false,green:false,note:"S5"},
+      {lbl:"3-3-7(E)(HS)",fp:3,rng:3,mor:7,bm:7,smk:0,sr:true,ei:true,hs:true,af:false,green:false,note:"S1・S3 士気値下線(ELR免除)"}
+    ],
+    smc:[
+      {lbl:"10-2",mor:10,bm:9,cmd:-2,note:"S4"},{lbl:"9-2",mor:9,bm:8,cmd:-2,note:"S1(T3)・S3"},
+      {lbl:"9-1",mor:9,bm:8,cmd:-1,note:"S5"},{lbl:"8-1",mor:8,bm:7,cmd:-1,note:"S1"},
+      {lbl:"8-0",mor:8,bm:7,cmd:0,note:"S1(T2)・S3"}
+    ],
+    elr:[{f:"7-4-7(E)",t:"6-6-6(1)"},{f:"6-6-6(1)",t:"5-4-6(2)"},{f:"6-6-7(E) [2]",t:"3-4-7(E)(HS)"}]},
+  GER:{lbl:"🇩🇪 独軍",col:"#aa9944",
+    mmc:[
+      {lbl:"5-4-8(E)",fp:5,rng:4,mor:8,bm:8,smk:2,sr:true,ei:false,hs:false,af:true,green:false,note:"S1(T2-3)・S2"},
+      {lbl:"4-6-8(E)",fp:4,rng:6,mor:8,bm:8,smk:2,sr:true,ei:false,hs:false,af:false,green:false,note:"S6"},
+      {lbl:"4-6-7(1)",fp:4,rng:6,mor:7,bm:7,smk:1,sr:false,ei:false,hs:false,af:false,green:false,note:"S1・S2・S5"},
+      {lbl:"4-4-7(2)",fp:4,rng:4,mor:7,bm:7,smk:0,sr:false,ei:false,hs:false,af:false,green:false,note:"S1・S3・S4"},
+      {lbl:"4-3-6(C)",fp:4,rng:3,mor:6,bm:5,smk:0,sr:false,ei:false,hs:false,af:false,green:true,note:"S3 未熟兵"},
+      {lbl:"2-3-7(2)(HS)",fp:2,rng:3,mor:7,bm:6,smk:0,sr:false,ei:false,hs:true,af:false,green:false,note:"ELR置換先"}
+    ],
+    smc:[
+      {lbl:"9-2",mor:9,bm:8,cmd:-2,note:"S2・S6"},{lbl:"9-1",mor:9,bm:8,cmd:-1,note:"S1降下猟兵・S6"},
+      {lbl:"8-1",mor:8,bm:7,cmd:-1,note:"S1・S2・S5"},{lbl:"8-0",mor:8,bm:7,cmd:0,note:"S2・S6"},
+      {lbl:"7-0",mor:7,bm:6,cmd:0,note:"S1・S3"},{lbl:"6+1",mor:6,bm:5,cmd:1,note:"S5"}
+    ],
+    elr:[{f:"5-4-8(E)",t:"4-4-7(2)"},{f:"4-6-8(E)",t:"4-4-7(2)"},{f:"4-6-7(1)",t:"2-3-7(2)(HS)"},{f:"4-4-7(2)",t:"2-3-7(2)(HS)"}]},
+  SOV:{lbl:"🇷🇺 ソ連",col:"#aa4444",
+    mmc:[
+      {lbl:"4-5-8(E)",fp:4,rng:5,mor:8,bm:8,smk:0,sr:true,ei:false,hs:false,af:false,green:false,note:"S6"},
+      {lbl:"4-4-7[1]",fp:4,rng:4,mor:7,bm:7,smk:0,sr:true,ei:false,hs:false,af:false,green:false,note:"S2"},
+      {lbl:"4-2-6(C)",fp:4,rng:2,mor:6,bm:5,smk:0,sr:false,ei:false,hs:false,af:false,green:true,note:"S2 未熟兵"},
+      {lbl:"5-2-7(1)",fp:5,rng:2,mor:7,bm:7,smk:0,sr:false,ei:false,hs:false,af:true,green:false,note:"S2(突撃集団)"}
+    ],
+    smc:[
+      {lbl:"9-2",mor:9,bm:8,cmd:-2,note:"S2"},{lbl:"9-1",mor:9,bm:8,cmd:-1,note:"S6"},
+      {lbl:"9-0",mor:9,bm:8,cmd:0,note:"S2突撃"},{lbl:"8-1",mor:8,bm:7,cmd:-1,note:"S2・S6"},
+      {lbl:"8-0",mor:8,bm:7,cmd:0,note:"S2・S6"},{lbl:"7-0",mor:7,bm:6,cmd:0,note:"S2"}
+    ],
+    elr:[{f:"4-5-8(E)",t:"4-4-7[1]"},{f:"4-4-7[1]",t:"4-2-6(C)"}]}
+};
+var SCN=[
+  {id:"S1",jp:"ヴィエルヴィルの奪還",en:"Retaking Vierville",loc:"フランス",dt:"1944/6/7",trn:5,
+   vic:"終了時、N5・N6・M4・L3に統制独軍なし→米勝利",
+   bal:{us:"L3を除外",ger:"T3増援に5-4-8×1追加"},ssr:[],
+   f:{USA:{elr:5,u:["【初期】7-4-7(E)×3・8-1","【T1北端】7-4-7(E)×3・8-1","【T2北端】7-4-7(E)×2・8-0","【T3北端】7-4-7(E)×2・9-2"]},
+      GER:{elr:3,u:["【T1東端】4-6-7(1)×3・8-1","【T1西端】4-4-7(2)×3・7-0","【T2東端】5-4-8(E)×3・9-1","【T3東端】5-4-8(E)×2・9-1"]}}},
+  {id:"S2",jp:"ネズミの戦争",en:"War of the Rats",loc:"スターリングラード",dt:"1942/9/26",trn:6,
+   vic:"終了時、独軍がF8・L6・O6を支配→独勝利",
+   bal:{us:"ソ4-2-6×2→4-5-8×2",ger:"ソ9-2→9-1"},
+   ssr:["独5-4-8の煙幕指数+2(dr≤4で配置可)"],
+   f:{GER:{elr:3,u:["【初期北側】5-4-8(E)×4・4-6-7(1)×7・9-2・9-1・8-1・8-0","MMG5-12×1・LMG3-8×1・FT24-1×1・DC×2"]},
+      SOV:{elr:3,u:["【初期南側】4-4-7[1]×5・4-2-6(C)×5・8-1・8-0・7-0","HMG4-12×1・LMG2-6×1","【突撃集団(dr<現T)南端】5-2-7(1)×3・9-0・LMG2-6×1"]}}},
+  {id:"S3",jp:"単純な方程式",en:"Simple Equation",loc:"アーヘン",dt:"1944/10/12",trn:7,
+   vic:"米軍がボードz建物を25ヘクス以上支配で即時勝利",
+   bal:{us:"独4-4-7×1除去",ger:"独MMG追加"},
+   ssr:["独軍は建物2棟を秘密裏に要塞化指定可(TEM+1)。米軍進入時に公開"],
+   f:{USA:{elr:3,u:["【初期ボードy≥7】6-6-6(1)×14・9-2・9-1・8-0×2","MMG4-10×2・FT24-1×1"]},
+      GER:{elr:3,u:["【初期ボードy≤2&z全体】4-4-7(2)×7・4-3-6(C)×5","8-1・8-0・7-0×2・HMG7-16×1・LMG3-8×3"]}}},
+  {id:"S4",jp:"帰還",en:"Welcome Back",loc:"ルクセンブルク",dt:"1944/12/16",trn:5,
+   vic:"独軍が西端から10VP以上脱出で即時独勝利",
+   bal:{us:"勝利条件10VP→12VP",ger:"米FT×1除去"},
+   ssr:["降雪：各RPhに独DR。≥10で降雪開始/継続・≤3で停止。降雪中：射程6+に+1妨害DRM","米7-4-7の煙幕指数+2(dr≤5可)"],
+   f:{USA:{elr:3,u:["【初期≥4】7-4-7(E)×2・6-6-7(E)×1・6-6-6(1)×2・5-4-6(2)×3","10-2・8-1・8-0・HMG8-16・MMG4-10×2・FT24-1×2"]},
+      GER:{elr:3,u:["【T1東端】4-4-7(2)×14・2-3-7(2)×2","9-1・8-1×2・7-0×2・MMG5-12×2・LMG3-8×3"]}}},
+  {id:"S5",jp:"コルヴィルの制圧",en:"Clearing Colleville",loc:"ノルマンディ",dt:"1944/6/6",trn:5,
+   vic:"終了時、M5から3ヘクス内の石造建物に統制独MMCなし→米勝利",
+   bal:{us:"独6+1→8-0",ger:"T2増援の独4-6-7×1除去"},
+   ssr:["米HS増援数はdr決定(T1: dr1-3=4個/4-6=3個, T2: dr1-3=5個/4-6=4個)"],
+   f:{GER:{elr:3,u:["【初期H〜R】4-6-7(1)×6・8-1・6+1・HMG7-16×1・LMG3-8×1","【T2南端】4-6-7(1)×4・8-0・MMG5-12×1"]},
+      USA:{elr:3,u:["【初期T以西】6-6-6(1)×4・HS×1・9-1・MMG4-10×1","【T1北端】6-6-6(1)×3・HS×?(SSR1)・9-2・8-0・MMG4-10×1","【T2北端】6-6-6(1)×2・HS×?(SSR1)・8-1・MMG4-10×1"]}}},
+  {id:"S6",jp:"東方からの解放",en:"Released from the East",loc:"イストラ",dt:"1941/12/11",trn:6,
+   vic:"終了時、ロシア軍がR2・L6・D3のうち2棟以上を支配→ソ勝利",
+   bal:{us:"独8-0→9-1",ger:"SSR3削除"},
+   ssr:["冬季迷彩：開豁地警戒移動時FFMO(-1DRM)不適用","戦術予備隊：最大5MMC・1SMC・2SWをT3に北/東端から進入可","独全MMCの混乱士気値+1(バランスで削除)"],
+   f:{GER:{elr:4,u:["【初期≤9】4-6-8(E)×9・9-2・8-1・8-0","MMG5-12×1・LMG3-8×3"]},
+      SOV:{elr:3,u:["【T1北端(SSR2でT3も可)】4-5-8(E)×14","9-1・8-1・8-0・MMG4-10×1・LMG2-6×1・DC×1"]}}}
+];
+
+
+// ===== 指揮官誕生テーブル =====
+var PROMO_DRM={
+  USA:-1, GER:-1, SOV:1  // 国籍drm
+};
+// 修正後dr→誕生指揮官
+var PROMO_TABLE=[
+  {max:1, ldr:"8-1"},
+  {max:3, ldr:"8-0"},
+  {max:5, ldr:"7-0"},
+  {max:6, ldr:"6+1"},
+  {max:99,ldr:null}  // 7以上：誕生なし
+];
+function promoCalc(nat,mor,broken){
+  // drm計算
+  var drm=0;
+  if(broken)drm+=1;          // 混乱状態で自己回復
+  if(mor<=6)drm+=1;          // 士気値6以下
+  if(mor>=8)drm-=1;          // 士気値8以上
+  drm+=(PROMO_DRM[nat]||0);  // 国籍修正
+  return drm;
+}
+function promoResult(dr,drm){
+  var mod=dr+drm;
+  for(var i=0;i<PROMO_TABLE.length;i++){
+    if(mod<=PROMO_TABLE[i].max)return PROMO_TABLE[i].ldr;
+  }
+  return null;
+}
+
+// =====================================================
+// RETRO NUMPAD/DICE ENGINE (3:2, ABC labels, RED/WHITE)
+// =====================================================
+var RABC={'1':'','2':'ABC','3':'DEF','4':'GHI','5':'JKL','6':'MNO','7':'PQRS','8':'TUV','9':'WXYZ','0':''};
+function mkRSeg(ch,wht){
+  var s=SEG7[ch]||SEG7[' '];
+  function seg(cls,on){return '<div class="s '+cls+(on?' on'+(wht?' wht':' red'):'')+'"></div>';}
+  return '<div class="rseg">'+seg('h sa',s[0])+seg('v sb',s[1])+seg('v sc',s[2])+seg('h sd',s[3])+seg('v se',s[4])+seg('v sf',s[5])+seg('h sg',s[6])+'</div>';
+}
+// retroテンキーHTML生成: onClickHandlerName(JS関数名文字列) を呼ぶ。値はdata-d属性で渡す
+// retroテンキーHTML生成: NPAD(groupId, digit) を呼ぶ(FIRE_PAGEグループ専用)
+// retroテンキーHTML生成: CNPAD(side, digit) を呼ぶ(CCタブ専用)
+function rNumpadHTMLS(side){
+  var keys=['7','8','9','4','5','6','1','2','3','C','0','BS'];
+  var h='<div class="rgrid">';
+  keys.forEach(function(k){
+    if(k==='C'){
+      h+='<button class="rbtn del" data-s="'+side+'" data-d="C" onclick="CNPAD(this.dataset.s,this.dataset.d)"><span class="r-clrlbl">CLR</span></button>';
+    } else if(k==='BS'){
+      h+='<button class="rbtn del" data-s="'+side+'" data-d="BS" onclick="CNPAD(this.dataset.s,this.dataset.d)"><span class="r-bslbl">⌫</span></button>';
+    } else {
+      h+='<button class="rbtn" data-s="'+side+'" data-d="'+k+'" onclick="CNPAD(this.dataset.s,this.dataset.d)">'+mkRSeg(k,true)+(RABC[k]?'<span class="r-abc">'+RABC[k]+'</span>':'<span class="r-abc">&nbsp;</span>')+'</button>';
+    }
+  });
+  h+='</div>';
+  return h;
+}
+function rNumpadHTMLG(gid){
+  var keys=['7','8','9','4','5','6','1','2','3','C','0','BS'];
+  var h='<div class="rgrid">';
+  keys.forEach(function(k){
+    if(k==='C'){
+      h+='<button class="rbtn del" data-g="'+gid+'" data-d="C" onclick="NPAD(parseInt(this.dataset.g),this.dataset.d)"><span class="r-clrlbl">CLR</span></button>';
+    } else if(k==='BS'){
+      h+='<button class="rbtn del" data-g="'+gid+'" data-d="BS" onclick="NPAD(parseInt(this.dataset.g),this.dataset.d)"><span class="r-bslbl">⌫</span></button>';
+    } else {
+      h+='<button class="rbtn" data-g="'+gid+'" data-d="'+k+'" onclick="NPAD(parseInt(this.dataset.g),this.dataset.d)">'+mkRSeg(k,true)+(RABC[k]?'<span class="r-abc">'+RABC[k]+'</span>':'<span class="r-abc">&nbsp;</span>')+'</button>';
+    }
+  });
+  h+='</div>';
+  return h;
+}
+function rNumpadHTML(handlerName){
+  var keys=['7','8','9','4','5','6','1','2','3','C','0','BS'];
+  var h='<div class="rgrid">';
+  keys.forEach(function(k){
+    if(k==='C'){
+      h+='<button class="rbtn del" data-d="C" onclick="'+handlerName+'(this.dataset.d)"><span class="r-clrlbl">CLR</span></button>';
+    } else if(k==='BS'){
+      h+='<button class="rbtn del" data-d="BS" onclick="'+handlerName+'(this.dataset.d)"><span class="r-bslbl">⌫</span></button>';
+    } else {
+      h+='<button class="rbtn" data-d="'+k+'" onclick="'+handlerName+'(this.dataset.d)">'+mkRSeg(k,true)+(RABC[k]?'<span class="r-abc">'+RABC[k]+'</span>':'<span class="r-abc">&nbsp;</span>')+'</button>';
+    }
+  });
+  h+='</div>';
+  return h;
+}
+// retroダイスボタンHTML生成
+function rDiceHTML(curVal,isRed,handlerName){
+  var h='<div class="rdbs">';
+  for(var n=1;n<=6;n++){
+    var on=curVal===n?(isRed?' on':' on-w'):'';
+    h+='<button class="rbtn'+on+'" data-v="'+n+'" onclick="'+handlerName+'('+n+')">'+mkRSeg(String(n),!isRed)+'<span class="r-dielbl '+(isRed?'red':'wht')+'">'+(isRed?'RED':'WHITE')+'</span></button>';
+  }
+  h+='</div>';
+  return h;
+}
+
+// =====================================================
+// HELPERS
+// =====================================================
+function ci(fp){for(var i=IFT_COLS.length-1;i>=0;i--)if(fp>=IFT_COLS[i])return i;return 0;}
+function iftR(fp,dr){var c=ci(fp),r=Math.max(0,Math.min(10,dr-2));return{r:IFT[r][c],col:IFT_LBL[c],ci:c};}
+function rm(r){
+  var M={"-":{t:"効果なし",c:"#334455",i:"—"},"PTC":{t:"PTC(クギ付け判定)",c:"#00aa55",i:"📌"},
+    "MC":{t:"NMC(士気チェック)",c:"#c8a032",i:"⚠"},"1MC":{t:"1MC(DRM+1)",c:"#c8a032",i:"⚠"},
+    "2MC":{t:"2MC(DRM+2)",c:"#cc8800",i:"‼"},"3MC":{t:"3MC(DRM+3)",c:"#cc3333",i:"‼"},
+    "4MC":{t:"4MC(DRM+4)",c:"#cc3333",i:"‼"},
+    "K1":{t:"K/1(損耗1個+MC DRM+1)",c:"#cc8800",i:"☠"},"K2":{t:"K/2(損耗1個+MC DRM+2)",c:"#cc8800",i:"☠"},
+    "K3":{t:"K/3(損耗1個+MC DRM+3)",c:"#cc3333",i:"☠"},"K4":{t:"K/4(損耗1個+MC DRM+4)",c:"#cc3333",i:"☠"},
+    "1KIA":{t:"1KIA(最低1除去+残全員混乱DM)",c:"#cc3333",i:"💀"},"2KIA":{t:"2KIA(最低2除去+残全員混乱DM)",c:"#aa0000",i:"💀"},
+    "3KIA":{t:"3KIA(最低3除去)",c:"#aa0000",i:"💀"},"4KIA":{t:"4KIA(最低4除去)",c:"#880000",i:"💀"},
+    "5KIA":{t:"5KIA(最低5除去)",c:"#880000",i:"💀"},"KIA":{t:"KIA(即時除去)",c:"#cc3333",i:"💀"}};
+  return M[r]||{t:r,c:"#aaa",i:"?"};
+}
+function rnd(){return Math.ceil(Math.random()*6);}
+var FACE=["","⚀","⚁","⚂","⚃","⚄","⚅"];
+function df(v){return v?FACE[v]:"🎲";}
+
+// =====================================================
+// STATE
+// =====================================================
+var INIT_FIRE={ph:"PFPh",swc:{},grps:[{id:1,ut:"squad",st:"good",fp:0,af:false,green:false,sh:"normal",sw:[]}],nid:2,
+  tem:0,temId:"open",ldr:0,cx:false,los:{},ffmo:false,ffnam:false,rd:0,wd:0,res:null,casualNat:null,casualUnit:null};
+var INIT_MC={ptc:false,type:"NMC",utype:"mmc",mor:7,elr:3,ldrImm:false,ldr:0,dm:false,rd:0,wd:0,res:null,elrNat:"GER",elrUnit:null,casualNat:null,casualUnit:null};
+var INIT_CC={af:0,df:0,adrm:0,rd:0,wd:0,res:null,promo:{nat:'GER',mor:7,dr:0},terrain:"other",ambAtk:0,ambDef:0,ambAtkDrm:0,ambDefDrm:0,ambRes:null,casualNat:null,casualUnit:null};
+var INIT_RALLY={self:true,bm:7,bld:false,dm:false,ldr:-1,rd:0,wd:0,res:null,promo:{show:false,nat:'GER',mor:7,dr:0,res:null},casualNat:null,casualUnit:null};
+var INIT_MOVE={dcPhase:"none",dcTer:"open",dcElite:true,dcCX:false,dcDff:"ok",blankVals:{}};
+var INIT_DFF=JSON.parse(JSON.stringify(INIT_FIRE));
+INIT_DFF.ph="DFF";
+var INIT_DFPH=JSON.parse(JSON.stringify(INIT_FIRE));
+INIT_DFPH.ph="DFPh";
+var INIT_AFPH=JSON.parse(JSON.stringify(INIT_FIRE));
+INIT_AFPH.ph="AFPh";
+
+function deepCopy(o){return JSON.parse(JSON.stringify(o));}
+var S={
+  tab:"pfph",
+  fire:deepCopy(INIT_FIRE),
+  dff:deepCopy(INIT_DFF),
+  dfph:deepCopy(INIT_DFPH),
+  afph:deepCopy(INIT_AFPH),
+  mc:deepCopy(INIT_MC),
+  cc:deepCopy(INIT_CC),
+  rally:deepCopy(INIT_RALLY),
+  move:deepCopy(INIT_MOVE),
+  scen:{sel:null},
+  unit:{nat:"USA",tab:"mmc"}
+};
+
+function getFireState(){
+  if(S.tab==="pfph")return S.fire;
+  if(S.tab==="dff")return S.dff;
+  if(S.tab==="dfph")return S.dfph;
+  if(S.tab==="afph")return S.afph;
+  return S.fire;
+}
+
+// =====================================================
+// DRAW
+// =====================================================
+function Draw(){document.getElementById("main").innerHTML=PAGE();}
+function TAB(t){
+  S.tab=t;
+  document.querySelectorAll(".nb").forEach(function(b,i){
+    var tabs=["rally","pfph","move","dff","dfph","afph","rout","aph","cc","mc","ref","scen","unit"];
+    b.classList.toggle("on",tabs[i]===t);
+  });
+  Draw();
+}
+function PAGE(){
+  var t=S.tab;
+  if(t==="pfph"||t==="dff"||t==="dfph"||t==="afph")return FIRE_PAGE();
+  if(t==="mc")return MC_PAGE();
+  if(t==="cc")return CC_PAGE();
+  if(t==="rally")return RALLY_PAGE();
+  if(t==="move")return MOVE_PAGE();
+  if(t==="rout")return ROUT_PAGE();
+  if(t==="aph")return APH_PAGE();
+  if(t==="ref")return REF_PAGE();
+  if(t==="scen")return SCEN_PAGE();
+  if(t==="unit")return UNIT_PAGE();
+  return '<div class="card"><div class="sh">Coming Soon</div></div>';
+}
+function TABCLR(){
+  var t=S.tab;
+  if(t==="pfph")S.fire=deepCopy(INIT_FIRE);
+  else if(t==="dff"){S.dff=deepCopy(INIT_DFF);}
+  else if(t==="dfph"){S.dfph=deepCopy(INIT_DFPH);}
+  else if(t==="afph"){S.afph=deepCopy(INIT_AFPH);}
+  else if(t==="mc")S.mc=deepCopy(INIT_MC);
+  else if(t==="cc")S.cc=deepCopy(INIT_CC);
+  else if(t==="rally")S.rally=deepCopy(INIT_RALLY);
+  else if(t==="move")S.move=deepCopy(INIT_MOVE);
+  Draw();
+}
+function ALLCLR(){
+  S.fire=deepCopy(INIT_FIRE);S.dff=deepCopy(INIT_DFF);
+  S.dfph=deepCopy(INIT_DFPH);S.afph=deepCopy(INIT_AFPH);
+  S.mc=deepCopy(INIT_MC);S.cc=deepCopy(INIT_CC);
+  S.rally=deepCopy(INIT_RALLY);S.move=deepCopy(INIT_MOVE);
+  Draw();
+}
+
+// =====================================================
+// FIRE HELPERS
+// =====================================================
+function exSW(){var l=[];SWT.forEach(function(t){var n=(getFireState().swc[t.id]||0);for(var i=0;i<n;i++)l.push({id:t.id,uid:t.id+"_"+i,lbl:n>1?t.lbl+" #"+(i+1):t.lbl,fp:t.fp,b:t.b,x:t.x,rof:t.rof});});return l;}
+function swMap(){var m={};exSW().forEach(function(s){m[s.uid]=s;});return m;}
+function losTotal(f){return LOS_OBS.reduce(function(s,o){return s+((f.los[o.id]||0)*o.d);},0);}
+function fireDRM(f){return f.tem+f.ldr+(f.cx?1:0)+losTotal(f)+(f.ffmo?-1:0)+(f.ffnam?-1:0);}
+
+function gfp(g,ph,m){
+  var hs=g.ut==="hs",hasSW=g.sw.length>0;
+  var base=(hs&&hasSW)?0:g.fp;
+  var sf=g.sw.reduce(function(s,uid){return s+(m[uid]?m[uid].fp:0);},0);
+  var f=base+sf;
+  if(g.st==="pinned"||g.ut==="smc")f=f/2;
+  if(ph==="AFPh"){
+    if(g.sh==="pbf"){if(g.af&&g.ut==="squad")f=f+1;}
+    else if(g.sh==="tpbf"){f=f*3/2;if(g.af&&g.ut==="squad")f=Math.ceil(f)+1;}
+    else if(g.sh==="long"){f=f/4;}
+    else{f=f/2;if(g.af&&g.ut==="squad")f=Math.ceil(f)+1;}
+  } else {
+    if(g.sh==="pbf")f=f*2;
+    else if(g.sh==="tpbf")f=f*3;
+    else if(g.sh==="long")f=f/2;
+  }
+  return f;
+}
+function totalFP(f,ph){
+  var m=swMap();
+  var raw=f.grps.reduce(function(s,g){return s+gfp(g,ph,m);},0);
+  return Math.min(36,Math.max(0.5,raw)); // 36超は36でcap
+}
+function totalFP_raw(f,ph){ // 表示用(cap前)
+  var m=swMap();
+  return Math.max(0.5,f.grps.reduce(function(s,g){return s+gfp(g,ph,m);},0));
+}
+
+// =====================================================
+// FIRE JUDGE
+// =====================================================
+function FJUDGE_COMMON(fst,ph){
+  var r=fst.rd,w=fst.wd;
+  if(!r||!w)return;
+  var raw=r+w,drm=fireDRM(fst),mod=raw+drm;
+  var tp=totalFP(fst,ph);
+  var it=iftR(tp,mod);
+  var hasPinned=fst.grps.some(function(g){return g.st==="pinned";});
+  var isCower=(r===w)&&fst.ldr===0;
+  var cowerCols=0;
+  if(isCower){var hasGreen=fst.grps.some(function(g){return g.green;});cowerCols=hasGreen?2:1;}
+  if(isCower&&cowerCols>0){var nc=Math.max(0,it.ci-cowerCols);it={r:IFT[Math.max(0,Math.min(10,mod-2))][nc],col:IFT_LBL[nc],ci:nc,cowered:true,cowerCols:cowerCols};}
+  var insts=exSW();
+  var swr=insts.map(function(s){
+    var rofResult=null;
+    if(s.rof>0){
+      if(ph==="AFPh")rofResult="AFPh→維持不可";
+      else if(hasPinned)rofResult="クギ付けあり→維持不可";
+      else if(isCower)rofResult="畏縮発生→維持不可";
+      else rofResult=r<=s.rof?"維持成功":"維持失敗";
+    }
+    var xFail=s.x<99&&raw>=s.x;
+    return{lbl:s.lbl,b:s.b,x:s.x,fail:s.b<99&&raw>=s.b&&!xFail,xFail:xFail,ro:rofResult};
+  });
+  var res2=null;
+  if(ph==="DFF"||ph==="SFF"||ph==="FPF"){
+    var plusDRM=(fst.cx?1:0)+losTotal(fst)+(fst.ldr>0?fst.ldr:0);
+    var tbl=RES_TBL[it.ci]||[0,0,0,0];
+    res2={fp:tbl[Math.min(plusDRM,3)]||0,plusDRM:plusDRM,baseBaseFP:tbl[0]};
+  }
+  return{raw:raw,mod:mod,drm:drm,ift:it,cow:isCower,cowerCols:cowerCols,swr:swr,res:res2,fp:tp};
+}
+function FJUDGE(){
+  var fst=getFireState(),ph=fst.ph;
+  var result=FJUDGE_COMMON(fst,ph);
+  if(result){fst.res=result;Draw();}
+}
+
+// =====================================================
+// FIRE PAGE
+// =====================================================
+function FIRE_PAGE(){
+  var fst=getFireState(),ph=fst.ph;
+  var tabLabels={pfph:"🎯 準備射撃(PFPh)",dff:"⚡ 防御臨機射撃(DFF)",dfph:"🛡 防御射撃(DFPh)",afph:"💥 前進射撃(AFPh)"};
+  var insts=exSW(),m=swMap();
+  var asgn=[];fst.grps.forEach(function(g){g.sw.forEach(function(u){asgn.push(u);});});
+  var unasgn=insts.filter(function(s){return asgn.indexOf(s.uid)<0;});
+  var tp=totalFP(fst,ph),drm=fireDRM(fst),los=losTotal(fst);
+  var h="";
+
+  // AFPh注記
+  if(ph==="AFPh"){
+    h+='<div class="infobox grn"><span style="color:#00aa55;font-weight:bold">⚡ 前進射撃(AFPh)</span> FP下線あり分隊のみAssault Fire対象。AFPh×½後に端数切り上げ→+1FP追加。遠距離射撃時は無効。</div>';
+  }
+
+  // STEP1 SW
+  h+='<div class="card"><div class="sh">SW(支援火器)選択</div>';
+  SWT.forEach(function(t){
+    var n=fst.swc[t.id]||0;
+    h+='<div class="swrow"><span class="swlbl" style="color:'+(n>0?"#ccddee":"#334455")+'">'+t.lbl+'</span>';
+    h+='<button class="cb'+(n>0?" on":"")+'" onclick="FswDec(\''+t.id+'\')"'+(n===0?" disabled":"")+'>−</button>';
+    h+='<span class="cnum-panel">'+mkSeg7(String(n),'grn')+'</span>';
+    h+='<button class="cb'+(n>0?" on":"")+'" onclick="FswInc(\''+t.id+'\')"'+(n>=4?" disabled":"")+'>＋</button>';
+    if(n>0)h+='<span style="font-size:10px;color:#8899aa">×'+n+'='+t.fp*n+'FP'+(t.b<99?" B#"+t.b:"")+(t.x<99?" X#"+t.x:"")+(t.rof?" ROF"+t.rof:"")+'</span>';
+    h+='</div>';
+  });
+  h+='</div>';
+
+  // STEP2 グループ
+  h+='<div class="card"><div class="sh">射撃グループ(FG)</div>';
+  h+='<div class="infobox" style="margin-bottom:8px">⚠ FGを組むには同一または隣接ヘクスが必要</div>';
+  fst.grps.forEach(function(g,idx){
+    var gf=gfp(g,ph,m);
+    var hs=g.ut==="hs",hasSW=g.sw.length>0;
+    var base=(hs&&hasSW)?0:g.fp,sf=g.sw.reduce(function(s,uid){return s+(m[uid]?m[uid].fp:0);},0);
+    h+='<div class="gc">';
+    h+='<div class="gh"><span class="ghl">グループ'+(idx+1)+'</span>';
+    h+='<div style="display:flex;gap:6px;align-items:center"><span class="ghr">'+(gf%1===0?gf:gf.toFixed(1))+'FP</span>';
+    if(fst.grps.length>1)h+='<button class="delbtn" onclick="FremG('+g.id+')">✕</button>';
+    h+='</div></div>';
+    // 種別・状態
+    h+='<div class="lbl">種別・状態</div><div class="btns">';
+    [["squad","分隊"],["hs","HS"],["smc","指揮官"]].forEach(function(t){h+='<button class="b sm'+(g.ut===t[0]?" on":"")+'" onclick="FgsSet('+g.id+',\'ut\',\''+t[0]+'\')">'+t[1]+'</button>';});
+    h+='<button class="b sm'+(g.st==="good"?" on grn":"")+'" onclick="FgsSet('+g.id+',\'st\',\'good\')">統制</button>';
+    h+='<button class="b sm red'+(g.st==="pinned"?" on":"")+'" onclick="FgsSet('+g.id+',\'st\',\'pinned\')">クギ付け×½</button>';
+    h+='</div>';
+    // FP テンキー
+    if(g.ut!=="smc"){
+      h+='<div class="lbl">固有FP'+(hs&&hasSW?" (HS+SW→0)":"")+'</div>';
+      if(!(hs&&hasSW)){
+        h+=seg7fp(g.fp===0?0:g.fp,'');
+        h+=rNumpadHTMLG(g.id);
+      } else {
+        h+='<div style="color:#8899aa;font-size:11px;padding:3px 0">HS+SW使用時→固有FP=0(自動)</div>';
+      }
+      // AF・未熟兵フラグ(AFPhと常時)
+      h+='<div class="btns" style="margin-top:4px">';
+      if(ph==="AFPh"&&g.ut==="squad"){
+        h+='<button class="b sm gld'+(g.af?" on":"")+'" onclick="FgsSet('+g.id+',\'af\','+(g.af?"false":"true")+')">FP下線あり(AF)'+(g.af?"✔":"")+'</button>';
+      }
+      h+='<button class="b sm'+(g.green?" on":"")+'" style="'+(g.green?"border-color:#cc8800;color:#cc8800":"")+'" onclick="FgsSet('+g.id+',\'green\','+(g.green?"false":"true")+')">未熟兵'+(g.green?"✔":"")+'</button>';
+      h+='</div>';
+    }
+    // 射撃条件
+    h+='<div class="lbl">射撃条件</div><div class="btns">';
+    [["normal","通常"],["pbf","PBF×2"],["tpbf","TPBF×3"],["long","遠距離×½"]].forEach(function(t){
+      h+='<button class="b sm'+(g.sh===t[0]?" on":"")+'" onclick="FgsSet('+g.id+',\'sh\',\''+t[0]+'\')">'+t[1]+'</button>';
+    });
+    h+='</div>';
+    // SW割当
+    if(insts.length>0){
+      h+='<div class="lbl">SW割当</div><div class="btns">';
+      insts.forEach(function(sw){
+        var og=fst.grps.filter(function(x){return x.id!==g.id&&x.sw.indexOf(sw.uid)>=0;})[0];
+        var dis=!!og,sel=g.sw.indexOf(sw.uid)>=0;
+        h+='<button class="b sm'+(sel?" on":"")+'"'+(dis?" disabled":"")+' onclick="'+(dis?"":"FtogSW("+g.id+",\'"+sw.uid+"\')")+'">'+sw.lbl+(dis?" (G"+(fst.grps.indexOf(og)+1)+")":"")+'</button>';
+      });
+      h+='</div>';
+    }
+    // 内訳
+    h+='<div style="font-size:10px;color:#8899aa">内訳：固有'+base+(sf>0?"+SW"+sf:"")
+      +(g.st==="pinned"||g.ut==="smc"?"×½":"")
+      +(ph==="AFPh"?(g.sh==="pbf"?"":(g.sh==="tpbf"?"×3/2":(g.sh==="long"?"×1/4":"×1/2"))):(g.sh==="pbf"?"×2":g.sh==="tpbf"?"×3":g.sh==="long"?"×1/2":""))
+      +(g.af&&ph==="AFPh"&&g.ut==="squad"?" +AF":"")
+      +" = <b style='color:#c8a032'>"+(gf%1===0?gf:gf.toFixed(1))+"FP</b></div>";
+    h+='</div>';
+  });
+  if(fst.grps.length<4)h+='<button class="addbtn" onclick="FaddG()">＋ グループを追加</button>';
+  if(unasgn.length>0)h+='<div style="color:#cc8800;font-size:10px;margin-top:5px">⚠ 未割当SW：'+unasgn.map(function(s){return s.lbl;}).join("・")+'</div>';
+  h+='</div>';
+
+  // STEP3 DRM
+  h+='<div class="card"><div class="sh">地形・DRM</div>';
+  h+='<div class="lbl">目標地形TEM</div><div class="btns">';
+  TEM_LIST.forEach(function(t){
+    h+='<button class="b sm'+(fst.temId===t.id?" on":"")+'" onclick="FtemSet(\''+t.id+'\','+t.v+')">'+t.lbl+(t.v>0?" +"+t.v:"±0")+'</button>';
+  });
+  h+='</div>';
+  h+='<div class="lbl">指揮官DRM</div><div class="btns">';
+  [["なし",0],["−1",-1],["−2",-2],["+1(6+1)",1]].forEach(function(t){
+    h+='<button class="b sm'+(fst.ldr===t[1]?" on":"")+'" onclick="Fset(\'ldr\','+t[1]+')">'+t[0]+'</button>';
+  });
+  h+='</div>';
+  h+='<div class="lbl">その他DRM</div><div class="btns">';
+  h+='<button class="b sm'+(fst.cx?" on":"")+'" onclick="Ftog(\'cx\')">CX +1</button>';
+  h+='<button class="b sm'+(fst.ffmo?" on":"")+'" onclick="Ftog(\'ffmo\')">FFMO −1(開豁地移動)</button>';
+  h+='<button class="b sm'+(fst.ffnam?" on":"")+'" onclick="Ftog(\'ffnam\')">FFNAM −1(通常移動)</button>';
+  h+='</div>';
+  h+='<div class="lbl">LOS妨害(個数)</div>';
+  LOS_OBS.forEach(function(o){
+    var n=fst.los[o.id]||0;
+    h+='<div class="lrow"><span class="llbl" style="color:'+(n>0?"#ccddee":"#334455")+'">'+o.lbl+' <b style="color:#c8a032">+'+o.d+'</b></span>';
+    h+='<button class="cb" data-id="'+o.id+'" onclick="FlosD(this.dataset.id)"'+(n===0?' disabled':'')+'>−</button>';
+    h+='<span class="cnum-panel">'+mkSeg7(String(n),'grn')+'</span>';
+    h+='<button class="cb'+(n>0?" on":"")+'" onclick="FlosI(\''+o.id+'\')">＋</button>';
+    if(n>0)h+='<span style="font-size:10px;color:#8899aa">+'+(o.d*n)+'</span>';
+    h+='</div>';
+  });
+  h+='</div>';
+
+  // サマリ
+  h+='<div class="sum">';
+  h+='<div class="sumcard"><div class="lbl">合計FP → IFT列</div>';
+  h+='<div class="sumval" style="color:#c8a032">'+(tp%1===0?tp:tp.toFixed(1))+'<span style="font-size:13px">FP</span></div>';
+  h+='<div style="font-size:12px;color:#8899aa">→ <b style="color:#c8a032">'+IFT_LBL[ci(tp)]+'</b>列</div>';
+  h+='</div>';
+  h+='<div class="sumcard"><div class="lbl">合計DRM</div>';
+  h+=seg7drm(drm);
+  h+='</div></div>';
+
+  // 注記
+  h+='<div class="notebox">';
+  h+='<div style="color:#8899aa;white-space:nowrap">⚀⚀ ゾロ目(指揮官なし)</div><div style="color:#8899aa">→ 畏縮：IFT列'+(fst.grps.some(function(g){return g.green;})?"2":"1")+'列低下</div>';
+  h+='<div style="color:#cc3333;white-space:nowrap">💀 DR12(6-6)</div><div style="color:#8899aa">→ 自動失敗＋損耗確定</div>';
+  if(insts.some(function(s){return s.rof>0;})&&ph!=="AFPh"&&!fst.grps.some(function(g){return g.st==="pinned";})){
+    h+='<div style="color:#c8a032;white-space:nowrap">🟦 🟥dr(ROF)</div><div style="color:#8899aa">→ ≤ROF#で維持成功</div>';
+  } else if(ph==="AFPh"){
+    h+='<div style="color:#8899aa;white-space:nowrap">🟦 ROF</div><div style="color:#8899aa">→ AFPhではROF維持不可</div>';
+  }
+  if(insts.length>0)h+='<div style="color:#cc8800;white-space:nowrap">⚠ 修正前DR</div><div style="color:#8899aa">→ ≥B#でSW故障</div>';
+  if(ph==="DFF")h+='<div style="color:#00aa55;white-space:nowrap">🔥 残留FP</div><div style="color:#8899aa">→ 防御臨機射撃時のみ発生</div>';
+  h+='</div>';
+
+  // ダイス
+  h+='<div class="card"><div class="sh">ダイスロール</div>';
+  h+='<div class="lbl">🟥 色付きダイス(ROF判定)</div>';
+  h+=rDiceHTML(fst.rd,true,'FdieR');
+  h+='<div class="lbl" style="margin-top:9px">⬜ 白ダイス</div>';
+  h+=rDiceHTML(fst.wd,false,'FdieW');
+  if(fst.rd&&fst.wd){
+    h+='<button class="judgbtn" onclick="FJUDGE()">▶ 判定実行</button>';
+  } else {
+    h+='<div style="color:#8899aa;font-size:11px;padding:8px 0">← 両ダイスを入力して判定</div>';
+  }
+  h+='</div>';
+
+  // 結果
+  if(fst.res){
+    var R=fst.res,rm2=rm(R.ift.r);
+    h+='<div class="res" style="border-color:'+rm2.c+'">';
+    h+='<div class="rrow">';
+    h+='<div><div class="lbl">修正前DR</div>'+seg7dr(R.raw)+'</div>';
+    h+='<span class="rarr">→</span>';
+    h+='<div><div class="lbl">修正後DR('+(R.drm>=0?"+":"")+R.drm+')</div>'+seg7dr(R.mod,'gld')+'</div>';
+    h+='<span class="rarr">→</span>';
+    h+='<div><div class="lbl">IFT '+R.ift.col+'列</div><div style="font-size:22px">'+rm2.i+'</div></div>';
+    h+='</div>';
+    h+='<div class="rmain" style="background:#0d0d14;border:1px solid '+rm2.c+'44;color:'+rm2.c+'">'+rm2.i+' '+rm2.t+'</div>';
+    if(R.raw===12)h+='<div class="rnote" style="color:#cc3333">⚠ 修正前DR12 → 自動失敗＋損耗</div>';
+    if(R.cow)h+='<div class="rnote" style="color:#cc8800">⚠ 畏縮(Cower)：IFT列'+R.cowerCols+'列低下'+(R.cowerCols>=2?" ← 未熟兵グループあり":"")+'</div>';
+    R.swr.forEach(function(s){
+      if(s.xFail)h+='<div class="rnote" style="color:#cc3333">💥 '+s.lbl+' 燃料切れ除去(修正前DR'+R.raw+'≥X#'+s.x+')</div>';
+      else if(s.fail)h+='<div class="rnote" style="color:#cc3333">😵 '+s.lbl+' 故障(DR'+R.raw+'≥B#'+s.b+')</div>';
+      else if(s.b<99||s.x<99)h+='<div class="rnote" style="color:#00aa55">👍 '+s.lbl+' 正常</div>';
+      if(s.ro)h+='<div class="rnote" style="color:'+(s.ro==="維持成功"?"#00aa55":"#334455")+'">ROF '+s.ro+'</div>';
+    });
+    // 残留FP強調
+    if(R.res){
+      if(R.res.fp>0){
+        h+='<div class="resfp">';
+        h+='<div style="color:#00aa55;font-size:11px;font-weight:bold;margin-bottom:3px">🔥 残留FP発生 — カウンターを目標ヘクスに置くこと</div>';
+        h+='<div style="font-size:26px;font-weight:bold;color:#c8a032;font-family:monospace;text-shadow:0 0 8px #c8a03244">'+R.res.fp+'<span style="font-size:13px">FP</span></div>';
+        if(R.res.plusDRM>0)h+='<div style="font-size:10px;color:#8899aa;margin-top:2px">基準'+R.res.baseBaseFP+'FP → +DRM'+R.res.plusDRM+'で段階低下</div>';
+        h+='</div>';
+      } else {
+        h+='<div class="rnote" style="color:#8899aa">残留FP: なし</div>';
+      }
+    }
+    // 損耗処理
+    var isKres=(R.ift.r&&R.ift.r!=="-"&&(/^K\d/.test(R.ift.r)||/KIA$/.test(R.ift.r)))||R.raw===12;
+    if(isKres){
+      h+='<div style="border-top:1px solid #1a1a2e;margin-top:10px;padding-top:10px">';
+      h+='<div style="font-size:10px;color:#0055aa;font-weight:bold;margin-bottom:6px">🔽 損耗処理</div>';
+      h+='<div class="lbl">国籍</div><div class="btns">';
+      [{k:"USA",v:"🇺🇸 米"},{k:"GER",v:"🇩🇪 独"},{k:"SOV",v:"🇷🇺 ソ"}].forEach(function(n){
+        h+='<button class="b sm'+(fst.casualNat===n.k?" on":"")+'" data-k="'+n.k+'" onclick="FCN(this.dataset.k)">'+n.v+'</button>';
+      });
+      h+='</div>';
+      if(fst.casualNat){
+        var cm=CASUAL_MAP[fst.casualNat]||{},cmKeys=Object.keys(cm);
+        h+='<div class="lbl">損耗ユニット</div><div class="btns">';
+        cmKeys.forEach(function(u,idx){
+          h+='<button class="b sm'+(fst.casualUnit===u?" on":"")+'" onclick="FCU('+idx+')">'+u+'</button>';
+        });
+        h+='<button class="b sm'+(fst.casualUnit==="HS"?" on red":"")+'" onclick="FCU(-1)">HS(→除去)</button>';
+        h+='</div>';
+        if(fst.casualUnit&&fst.casualUnit!=="HS"){
+          var after=cm[fst.casualUnit];
+          if(after)h+='<div style="background:#0d0d14;border:1px solid #0055aa33;border-radius:3px;padding:7px;font-size:12px">'+fst.casualUnit+' → <b style="color:#c8a032">'+after+'</b> 混乱+DM登場</div>';
+        } else if(fst.casualUnit==="HS"){
+          h+='<div style="background:#0d0d14;border:1px solid #cc333333;border-radius:3px;padding:7px;font-size:12px">HS → <b style="color:#cc3333">除去(KIA)</b></div>';
+        }
+      }
+      h+='</div>';
+    }
+    h+='<button class="resetbtn" onclick="FRES()">↩ リセット</button></div>';
+  }
+  return h;
+}
+
+// =====================================================
+// FIRE EVENTS
+// =====================================================
+function Fset(k,v){var f=getFireState();f[k]=v;f.res=null;Draw();}
+function Ftog(k){var f=getFireState();f[k]=!f[k];f.res=null;Draw();}
+function FtemSet(id,v){var f=getFireState();f.temId=id;f.tem=v;f.res=null;Draw();}
+function FswInc(id){var f=getFireState();f.swc[id]=Math.min(4,(f.swc[id]||0)+1);f.res=null;Draw();}
+function FswDec(id){
+  var f=getFireState();var cur=f.swc[id]||0;
+  if(cur>0){var ru=id+"_"+(cur-1);f.grps.forEach(function(g){g.sw=g.sw.filter(function(u){return u!==ru;});});}
+  f.swc[id]=Math.max(0,cur-1);f.res=null;Draw();
+}
+function FlosI(id){var f=getFireState();f.los[id]=(f.los[id]||0)+1;f.res=null;Draw();}
+function FlosD(id){var f=getFireState();f.los[id]=Math.max(0,(f.los[id]||0)-1);f.res=null;Draw();}
+function FgsSet(id,k,v){var f=getFireState();f.grps.forEach(function(g){if(g.id===id)g[k]=v;});f.res=null;Draw();}
+function FtogSW(gid,uid){
+  var f=getFireState();
+  f.grps.forEach(function(g){if(g.id!==gid)return;var i=g.sw.indexOf(uid);if(i>=0)g.sw.splice(i,1);else g.sw.push(uid);});
+  f.res=null;Draw();
+}
+function FaddG(){var f=getFireState();f.grps.push({id:f.nid++,ut:"squad",st:"good",fp:0,af:false,green:false,sh:"normal",sw:[]});f.res=null;Draw();}
+function FremG(id){var f=getFireState();f.grps=f.grps.filter(function(g){return g.id!==id;});f.res=null;Draw();}
+function Fdie(k,v){var f=getFireState();f[k]=v;f.res=null;Draw();}
+function FdieR(v){Fdie('rd',v);}
+function FdieW(v){Fdie('wd',v);}
+function FRES(){var f=getFireState();f.res=null;f.rd=0;f.wd=0;f.casualNat=null;f.casualUnit=null;Draw();}
+function NPAD(gid,d){
+  var f=getFireState();
+  f.grps.forEach(function(g){
+    if(g.id!==gid)return;
+    if(d==="C")g.fp=0;
+    else if(d==="BS")g.fp=Math.floor(g.fp/10);
+    else{var n=g.fp*10+parseInt(d);if(n<=99)g.fp=n;}
+  });
+  f.res=null;Draw();
+}
+function FCN(nat){var f=getFireState();f.casualNat=nat;f.casualUnit=null;Draw();}
+function FCU(idx){
+  var f=getFireState();var cm=CASUAL_MAP[f.casualNat]||{},keys=Object.keys(cm);
+  if(idx===-1)f.casualUnit="HS";
+  else f.casualUnit=keys[idx]||null;
+  Draw();
+}
+
+// =====================================================
+// MC PAGE
+// =====================================================
+function MC_PAGE(){
+  var m=S.mc;
+  var mcDRM=m.ptc?0:{NMC:0,"1MC":1,"2MC":2,"3MC":3}[m.type]||0;
+  var tdrm=mcDRM+m.ldr+(m.dm?4:0);
+  var h="";
+  h+='<div class="card"><div class="sh">MC / PTC種別</div>';
+  h+='<div class="btns">';
+  h+='<button class="b'+(m.ptc?"":" on grn")+'" onclick="MS(\'ptc\',false)">MC(士気チェック)</button>';
+  h+='<button class="b'+(m.ptc?" on":"")+'" onclick="MS(\'ptc\',true)">PTC(クギ付け判定)</button>';
+  h+='</div>';
+  if(!m.ptc){
+    h+='<div class="lbl">MC種別</div><div class="btns">';
+    ["NMC","1MC","2MC","3MC"].forEach(function(t){h+='<button class="b sm'+(m.type===t?" on":"")+'" onclick="MS(\'type\',\''+t+'\')">'+t+'</button>';});
+    h+='</div>';
+  }
+  h+='</div>';
+  h+='<div class="card"><div class="sh">ユニット設定</div>';
+  h+='<div class="lbl">ユニット種別</div><div class="btns">';
+  h+='<button class="b'+(m.utype==="mmc"?" on":"")+'" onclick="MS(\'utype\',\'mmc\')">MMC(分隊・HS)</button>';
+  h+='<button class="b'+(m.utype==="smc"?" on":"")+'" onclick="MS(\'utype\',\'smc\')">SMC(指揮官)</button>';
+  h+='</div>';
+  h+='<div class="lbl">士気値</div><div class="btns">';
+  [5,6,7,8,9].forEach(function(v){h+='<button class="b sm'+(m.mor===v?" on":"")+'" onclick="MS(\'mor\','+v+')">'+v+'</button>';});
+  h+='</div>';
+  if(m.utype==="mmc"){
+    h+='<div class="lbl">ELR(限界値='+(m.mor+m.elr)+')</div><div class="btns">';
+    [1,2,3,4,5].forEach(function(v){h+='<button class="b sm'+(m.elr===v?" on":"")+'" onclick="MS(\'elr\','+v+')">'+v+'</button>';});
+    h+='</div>';
+    h+='<div class="btns">';
+    h+='<button class="b sm'+(m.ldrImm?" on gld":"")+'" onclick="MS(\'ldrImm\','+(m.ldrImm?"false":"true")+')">士気値下線あり(ELR置換免除)'+(m.ldrImm?"✔":"")+'</button>';
+    h+='</div>';
+  }
+  h+='<div class="lbl">'+(m.utype==="smc"?"別指揮官DRM":"同スタック指揮官DRM")+'</div><div class="btns">';
+  [["なし",0],["−1",-1],["−2",-2],["+1(6+1)",1]].forEach(function(t){h+='<button class="b sm'+(m.ldr===t[1]?" on":"")+'" onclick="MS(\'ldr\','+t[1]+')">'+t[0]+'</button>';});
+  h+='</div>';
+  h+='<div class="lbl">DM状態</div><div class="btns">';
+  h+='<button class="b sm'+(m.dm?"":" on grn")+'" onclick="MS(\'dm\',false)">DMなし</button>';
+  h+='<button class="b sm red'+(m.dm?" on":"")+'" onclick="MS(\'dm\',true)">DM状態 +4</button>';
+  h+='</div></div>';
+  h+='<div class="card card-alt" style="font-size:11px;color:#8899aa">';
+  h+=(m.utype==="smc"?"【SMC指揮官】":"【MMC分隊/HS】")+' 士気値'+m.mor+' / DRM'+(tdrm>=0?"+":"")+tdrm;
+  if(m.utype==="mmc")h+=' / ELR限界値'+(m.mor+m.elr);
+  h+='</div>';
+  h+='<div class="card"><div class="sh">ダイスロール</div>';
+  h+='<div class="notebox">';
+  h+='<div style="color:#8899aa;white-space:nowrap">✅ DR2(1-1)</div><div style="color:#8899aa">→ 自動成功ではない(修正後DRで通常判定)</div>';
+  h+='<div style="color:#cc3333;white-space:nowrap">💀 DR12(6-6)</div><div style="color:#8899aa">→ 自動失敗＋損耗確定</div>';
+  h+='</div>';
+  h+='<div class="lbl">🟥 色付きダイス</div>';
+  h+=rDiceHTML(m.rd,true,'MS_dieR');
+  h+='<div class="lbl" style="margin-top:9px">⬜ 白ダイス</div>';
+  h+=rDiceHTML(m.wd,false,'MS_dieW');
+  if(m.rd&&m.wd)h+='<button class="judgbtn" onclick="MJUDGE()">▶ 判定実行</button>';
+  else h+='<div style="color:#8899aa;font-size:11px;padding:8px 0">← 両ダイスを入力して判定</div>';
+  h+='</div>';
+  if(m.res){
+    var R=m.res,sm=MSTAT(R.st,R.ef);
+    h+='<div class="res" style="border-color:'+sm.c+'">';
+    h+='<div class="rrow"><div><div class="lbl">修正前DR</div><div class="rv" style="color:#8899aa">'+R.raw+'</div></div>';
+    h+='<span class="rarr">→</span>';
+    h+='<div><div class="lbl">修正後DR</div><div class="rv" style="color:#c8a032">'+R.mod+'</div></div></div>';
+    h+='<div class="rmain" style="background:#0d0d14;border:1px solid '+sm.c+'44;color:'+sm.c+'">'+sm.i+' '+sm.t+'</div>';
+    if(R.ef&&!m.ldrImm)h+='<div class="rnote" style="color:#cc3333">DR'+R.mod+' > ELR限界値'+(m.mor+m.elr)+' → クラス低下確定</div>';
+    // ELR低下処理
+    if(R.ef&&!m.ldrImm){
+      h+='<div style="border-top:1px solid #1a1a2e;margin-top:10px;padding-top:10px">';
+      h+='<div style="font-size:10px;color:#0055aa;font-weight:bold;margin-bottom:6px">🔽 クラス低下処理</div>';
+      h+='<div class="lbl">国籍</div><div class="btns">';
+      [{k:"USA",v:"🇺🇸 米"},{k:"GER",v:"🇩🇪 独"},{k:"SOV",v:"🇷🇺 ソ"}].forEach(function(n){
+        h+='<button class="b sm'+(m.elrNat===n.k?" on":"")+'" data-k="'+n.k+'" onclick="ME_nat(this.dataset.k)">'+n.v+'</button>';
+      });
+      h+='</div>';
+      var em=ELR_MAP[m.elrNat]||{},emKeys=Object.keys(em);
+      if(emKeys.length>0){
+        h+='<div class="lbl">対象ユニット</div><div class="btns">';
+        emKeys.forEach(function(u,idx){h+='<button class="b sm'+(m.elrUnit===u?" on":"")+'" onclick="ME_unit('+idx+')">'+u+'</button>';});
+        h+='</div>';
+        if(m.elrUnit){
+          var a2=em[m.elrUnit];
+          if(a2)h+='<div style="background:#0d0d14;border:1px solid #c8a03233;border-radius:3px;padding:7px;font-size:12px">'+m.elrUnit+' → <b style="color:#c8a032">'+a2+'</b> 混乱+DM登場</div>';
+        }
+      }
+      h+='</div>';
+    }
+    // DR12損耗
+    if(R.st==="auto"){
+      h+='<div style="border-top:1px solid #1a1a2e;margin-top:10px;padding-top:10px">';
+      h+='<div style="font-size:10px;color:#0055aa;font-weight:bold;margin-bottom:6px">🔽 損耗処理(DR12自動失敗)</div>';
+      h+='<div class="lbl">国籍</div><div class="btns">';
+      [{k:"USA",v:"🇺🇸 米"},{k:"GER",v:"🇩🇪 独"},{k:"SOV",v:"🇷🇺 ソ"}].forEach(function(n){
+        h+='<button class="b sm'+(m.casualNat===n.k?" on":"")+'" data-k="'+n.k+'" onclick="MCN(this.dataset.k)">'+n.v+'</button>';
+      });
+      h+='</div>';
+      if(m.casualNat){
+        var mcm=CASUAL_MAP[m.casualNat]||{},mcmKeys=Object.keys(mcm);
+        h+='<div class="lbl">損耗ユニット</div><div class="btns">';
+        mcmKeys.forEach(function(u,idx){
+          h+='<button class="b sm'+(m.casualUnit===u?" on":"")+'" onclick="MCU('+idx+')">'+u+'</button>';
+        });
+        h+='<button class="b sm'+(m.casualUnit==="HS"?" on red":"")+'" onclick="MCU(-1)">HS・操作班(→除去)</button>';
+        h+='</div>';
+        if(m.casualUnit&&m.casualUnit!=="HS"){
+          var mafter=mcm[m.casualUnit];
+          if(mafter)h+='<div style="background:#0d0d14;border:1px solid #0055aa33;border-radius:3px;padding:7px;font-size:12px">'+m.casualUnit+' → <b style="color:#c8a032">'+mafter+'</b> 混乱+DM登場</div>';
+        } else if(m.casualUnit==="HS"){
+          h+='<div style="background:#0d0d14;border:1px solid #cc333333;border-radius:3px;padding:7px;font-size:12px">HS・操作班 → <b style="color:#cc3333">除去(KIA)</b></div>';
+        }
+      }
+      h+='</div>';
+    }
+    h+='<button class="resetbtn" onclick="MRES()">↩ リセット</button></div>';
+  }
+  return h;
+}
+function MSTAT(s,ef){
+  if(s==="ok")return{t:"MC成功",c:"#00aa55",i:"👍"};
+  if(s==="pin")return{t:"クギ付け状態",c:"#c8a032",i:"📌"};
+  if(s==="brk")return{t:ef?"MC失敗＋クラス低下":"MC失敗→混乱＋DM",c:ef?"#cc3333":"#cc8800",i:ef?"‼":"😵"};
+  if(s==="ptcOk")return{t:"PTC成功(クギ付けなし)",c:"#00aa55",i:"👍"};
+  if(s==="ptcPin")return{t:"PTC失敗→クギ付け状態",c:"#c8a032",i:"📌"};
+  if(s==="auto")return{t:"自動失敗＋損耗(DR12)",c:"#aa0000",i:"☠"};
+  return{t:s,c:"#aaa",i:"?"};
+}
+function MS(k,v){S.mc[k]=v;S.mc.res=null;Draw();}
+function MS_die(k,v){S.mc[k]=v;S.mc.res=null;Draw();}
+function MS_dieR(v){MS_die('rd',v);}
+function MS_dieW(v){MS_die('wd',v);}
+function MRES(){S.mc.res=null;S.mc.rd=0;S.mc.wd=0;S.mc.elrUnit=null;S.mc.casualNat=null;S.mc.casualUnit=null;Draw();}
+function MCN(nat){S.mc.casualNat=nat;S.mc.casualUnit=null;Draw();}
+function MCU(idx){
+  var cm=CASUAL_MAP[S.mc.casualNat]||{},keys=Object.keys(cm);
+  if(idx===-1)S.mc.casualUnit="HS";
+  else S.mc.casualUnit=keys[idx]||null;
+  Draw();
+}
+function ME_nat(n){S.mc.elrNat=n;S.mc.elrUnit=null;Draw();}
+function ME_unit(idx){var em=ELR_MAP[S.mc.elrNat]||{},keys=Object.keys(em);S.mc.elrUnit=keys[idx]||null;Draw();}
+function MJUDGE(){
+  var m=S.mc,r=m.rd,w=m.wd;if(!r||!w)return;
+  var mcDRM=m.ptc?0:{NMC:0,"1MC":1,"2MC":2,"3MC":3}[m.type]||0;
+  var tdrm=mcDRM+m.ldr+(m.dm?4:0);
+  var raw=r+w,mod=raw+tdrm,st,ef=false;
+  if(raw===12)st="auto";
+  else if(m.ptc)st=mod<=m.mor?"ptcOk":"ptcPin";
+  else{
+    if(mod<m.mor)st="ok";
+    else if(mod===m.mor)st="pin";
+    else{st="brk";if(m.utype==="mmc"&&!m.ldrImm&&mod>m.mor+m.elr)ef=true;}
+  }
+  S.mc.res={raw:raw,mod:mod,st:st,ef:ef};Draw();
+}
+
+// =====================================================
+// CC PAGE
+// =====================================================
+function CC_PAGE(){
+  var c=S.cc;
+  function ratio(a,d){
+  var r=a/d;
+  if(r>10)return 13;if(r>=10)return 12;if(r>=8)return 11;if(r>=6)return 10;
+  if(r>=4)return 9;if(r>=3)return 8;if(r>=2)return 7;if(r>=1.5)return 6;
+  if(r>=1)return 5;if(r>=0.5)return 4;if(r>=1/4)return 3;if(r>=1/6)return 2;
+  if(r>=1/8)return 1;return 0;
+}
+  var ri=c.af>0&&c.df>0?ratio(c.af,c.df):-1,elim=ri>=0?CCT_N[ri]:null;
+  var h="";
+
+  // ② 指揮官1FP注記
+  h+='<div class="infobox gld">⚔ 白兵戦の指揮官(SMC)は1FPを保有。MMCと組んで自身の1FPを加算可能。クギ付け指揮官：攻撃時0.5FP／防御時1FP</div>';
+
+  // 地形・不意打ち
+  h+='<div class="card"><div class="sh">地形・不意打ち</div>';
+  h+='<div class="lbl">白兵戦ヘクスの地形</div><div class="btns">';
+  var terOpts=[{k:"woods",v:"🌲 林(不意打ちあり)"},{k:"bldg",v:"🏠 建物(不意打ちあり)"},{k:"other",v:"開豁地・その他"}];
+  terOpts.forEach(function(t){
+    h+='<button class="b sm'+(c.terrain===t.k?" on":"")+'" data-ter="'+t.k+'" onclick="CS_ter(this.dataset.ter)">'+t.v+'</button>';
+  });
+  h+='</div>';
+
+  if(c.terrain==="woods"||c.terrain==="bldg"){
+    h+='<div style="background:#0d0d14;border:1px solid #1a1a2e;border-radius:3px;padding:9px;margin-top:5px">';
+    h+='<div style="font-size:10px;color:#0055aa;font-weight:bold;margin-bottom:7px">不意打ち(Ambush)— 修正後drの差≥3で成功</div>';
+    var dOpts=[[-2,"-2"],[-1,"-1"],[0,"0"],[1,"+1"],[2,"+2"],[3,"+3"]];
+    h+='<div class="lbl">攻撃側drm(未熟兵/クギ付け/CX各+1・指揮官修正)</div><div class="btns">';
+    dOpts.forEach(function(t){
+      h+='<button class="b sm'+(c.ambAtkDrm===t[0]?" on":"")+'" data-v="'+t[0]+'" onclick="CA_adrm(this.dataset.v)">'+t[1]+'</button>';
+    });
+    h+='</div>';
+    h+='<div class="lbl">防御側drm</div><div class="btns">';
+    dOpts.forEach(function(t){
+      h+='<button class="b sm'+(c.ambDefDrm===t[0]?" on":"")+'" data-v="'+t[0]+'" onclick="CA_ddrm(this.dataset.v)">'+t[1]+'</button>';
+    });
+    h+='</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:5px">';
+    h+='<div><div class="lbl">攻撃側dr</div>'+rDiceHTML(c.ambAtk,true,'CA_atkR');
+    h+='</div>';
+    h+='<div><div class="lbl">防御側dr</div>'+rDiceHTML(c.ambDef,false,'CA_defR');
+    h+='</div></div></div>';
+
+    if(c.ambAtk&&c.ambDef){
+      h+='<button class="judgbtn" onclick="CAMBJUDGE()">▶ 不意打ち判定実行</button>';
+      if(c.ambRes){
+        var am=c.ambAtk+c.ambAtkDrm,dm2=c.ambDef+c.ambDefDrm,diff=Math.abs(am-dm2);
+        if(c.ambRes==="atk")h+='<div style="background:#0a1a0a;border:2px solid #00aa55;border-radius:3px;padding:8px;margin-top:6px;color:#00aa55;font-weight:bold">⚡ 攻撃側不意打ち成功(差'+diff+')攻撃-1DRM・防御+1DRM。攻撃側が先に全攻撃を解決。</div>';
+        else if(c.ambRes==="def")h+='<div style="background:#1a0a0a;border:2px solid #cc3333;border-radius:3px;padding:8px;margin-top:6px;color:#cc3333;font-weight:bold">⚡ 防御側不意打ち成功(差'+diff+')防御-1DRM・攻撃+1DRM。防御側が先に全攻撃を解決。</div>';
+        else h+='<div style="background:#0d0d14;border:1px solid #1a1a2e;border-radius:3px;padding:6px;margin-top:6px;color:#8899aa;font-size:11px">差'+diff+' → 不意打ちなし(通常CC)</div>';
+      }
+    }
+    h+='</div>';
+  }
+  h+='</div>';
+
+  // FPテンキー
+  h+='<div class="card"><div class="sh">FP入力</div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+  [["af","攻撃側FP"],["df","防御側FP"]].forEach(function(sd){
+    h+='<div><div class="lbl">'+sd[1]+'</div>';
+    h+=seg7fp(c[sd[0]]||0,'');
+    h+=rNumpadHTMLS(sd[0]);
+    h+='</div>';
+  });
+  h+='</div>';
+  if(elim!==null)h+='<div class="infobox" style="margin-top:6px">戦闘比 '+CCT_R[ri]+' → 除去ナンバー <b style="color:#c8a032">'+elim+'</b>(修正後DR＜'+elim+'で除去)</div>';
+  h+='</div>';
+
+  // CC DRM
+  h+='<div class="card"><div class="sh">CC DRM</div>';
+  h+='<div class="lbl">攻撃側DRM合計</div><div class="btns">';
+  [[-2,"不意打ち成功−2"],[-1,"−1"],[0,"±0"],[1,"+1"],[2,"+2"]].forEach(function(t){
+    h+='<button class="b sm'+(c.adrm===t[0]?" on":"")+'" data-v="'+t[0]+'" onclick="CS_drm(this.dataset.v)">'+t[1]+'</button>';
+  });
+  h+='</div></div>';
+
+  // ダイス
+  h+='<div class="card"><div class="sh">CC DR入力</div>';
+  h+='<div class="notebox"><div style="color:#c8a032;white-space:nowrap">🎖 DR2(ゾロ目1-1)</div><div style="color:#8899aa">→ MMC参加時：指揮官誕生判定</div><div style="color:#cc3333;white-space:nowrap">💀 DR12(6-6)</div><div style="color:#8899aa">→ 自動失敗確定</div></div>';
+  h+='<div class="lbl">🟥 色付きダイス</div>';
+  h+=rDiceHTML(c.rd,true,'CS_rdR');
+  h+='<div class="lbl" style="margin-top:9px">⬜ 白ダイス</div>';
+  h+=rDiceHTML(c.wd,false,'CS_wdR');
+  if(c.rd&&c.wd&&elim!==null)h+='<button class="judgbtn" onclick="CJUDGE()">▶ CC判定実行</button>';
+  else h+='<div style="color:#8899aa;font-size:11px;padding:8px 0">← 両ダイスとFP入力後に判定可能</div>';
+  h+='</div>';
+
+  if(c.res){
+    var CR=c.res,csm=CSTAT(CR.st);
+    h+='<div class="res" style="border-color:'+csm.c+'">';
+    h+='<div class="rrow"><div><div class="lbl">修正前DR</div>'+seg7dr(CR.raw)+'</div>';
+    h+='<span class="rarr">→</span><div><div class="lbl">修正後DR</div>'+seg7dr(CR.mod,'gld')+'</div></div>';
+    h+='<div class="rmain" style="background:#0d0d14;border:1px solid '+csm.c+'44;color:'+csm.c+'">'+csm.i+' '+csm.t+'</div>';
+    if(CR.pro){
+      var cp=S.cc.promo||{nat:'GER',mor:7,dr:0};
+      h+='<div style="border-top:1px solid #1a1a2e;margin-top:10px;padding-top:10px">';
+      h+='<div style="font-size:11px;color:#c8a032;font-weight:bold;margin-bottom:4px">🎖 指揮官誕生(CC DR=2・MMC参加)</div>';
+      h+='<div style="font-size:9px;color:#8899aa;margin-bottom:8px">※ MMC参加・修正前CC DR=2の場合のみ発生</div>';
+      h+='<div class="lbl">国籍</div><div class="seg" style="margin-bottom:8px">';
+      [{k:'USA',v:'🇺🇸 米'},{k:'GER',v:'🇩🇪 独'},{k:'SOV',v:'🇷🇺 ソ'}].forEach(function(n){
+        h+='<button class="b'+(cp.nat===n.k?' on gld':'')+'" data-k="'+n.k+'" onclick="CP_nat(this.dataset.k)">'+n.v+'</button>';
+      });
+      h+='</div>';
+      h+='<div class="lbl">通常士気値</div><div class="seg" style="margin-bottom:8px">';
+      [5,6,7,8,9].forEach(function(v){
+        h+='<button class="b'+(cp.mor===v?' on gld':'')+'" onclick="CP_mor('+v+')">'+v+'</button>';
+      });
+      h+='</div>';
+      var cpdrm=promoCalc(cp.nat,cp.mor,false); // CCでは混乱回復+1なし
+      h+='<div style="font-size:10px;color:#8899aa;margin-bottom:6px">drm：<b style="color:#c8a032">'+(cpdrm>=0?'+':'')+cpdrm+'</b></div>';
+      h+='<div class="lbl">dr入力</div>'+rDiceHTML(cp.dr,false,'CP_drR');
+      if(cp.dr){
+        var cl2=promoResult(cp.dr,cpdrm);
+        if(cl2){
+          h+='<div style="background:linear-gradient(180deg,#1a1006,#2a1a0a);border:2px solid #c8a032;border-radius:4px;padding:10px">';
+          h+='<div style="color:#c8a032;font-size:10px;font-weight:bold;margin-bottom:3px">🎖 指揮官誕生！</div>';
+          h+='<div style="font-size:24px;font-weight:bold;color:#FFD700;text-shadow:0 0 12px #c8a03288;font-family:monospace">'+cl2+'</div>';
+          h+='</div>';
+        } else {
+          h+='<div style="background:#0d0d14;border:1px solid #333;border-radius:3px;padding:8px;color:#556677;font-size:12px">dr'+(cp.dr+cpdrm)+' → 誕生なし</div>';
+        }
+      }
+      h+='</div>';
+    }
+    // ④ CC損耗処理UI(損耗結果時)
+    if(CR.st==="cas"){
+      h+='<div style="border-top:1px solid #1a1a2e;margin-top:10px;padding-top:10px">';
+      h+='<div style="font-size:10px;color:#0055aa;font-weight:bold;margin-bottom:6px">🔽 損耗処理(防御側1ユニット・無作為)</div>';
+      h+='<div class="lbl">国籍</div><div class="btns">';
+      [{k:"USA",v:"🇺🇸 米"},{k:"GER",v:"🇩🇪 独"},{k:"SOV",v:"🇷🇺 ソ"}].forEach(function(n){
+        h+='<button class="b sm'+(c.casualNat===n.k?" on":"")+'" data-k="'+n.k+'" onclick="CCN(this.dataset.k)">'+n.v+'</button>';
+      });
+      h+='</div>';
+      if(c.casualNat){
+        var ccm=CASUAL_MAP[c.casualNat]||{},ccmKeys=Object.keys(ccm);
+        h+='<div class="lbl">損耗ユニット</div><div class="btns">';
+        ccmKeys.forEach(function(u,idx){
+          h+='<button class="b sm'+(c.casualUnit===u?" on":"")+'" onclick="CCU('+idx+')">'+u+'</button>';
+        });
+        h+='<button class="b sm'+(c.casualUnit==="HS"?" on red":"")+'" onclick="CCU(-1)">HS・操作班(→除去)</button>';
+        h+='</div>';
+        if(c.casualUnit&&c.casualUnit!=="HS"){
+          var cafter=ccm[c.casualUnit];
+          if(cafter)h+='<div style="background:#0d0d14;border:1px solid #0055aa33;border-radius:3px;padding:7px;font-size:12px">'+c.casualUnit+' → <b style="color:#c8a032">'+cafter+'</b> 混乱+DM登場</div>';
+        } else if(c.casualUnit==="HS"){
+          h+='<div style="background:#0d0d14;border:1px solid #cc333333;border-radius:3px;padding:7px;font-size:12px">HS・操作班 → <b style="color:#cc3333">除去(KIA)</b></div>';
+        }
+      }
+      h+='</div>';
+    }
+    h+='<button class="resetbtn" onclick="CRES()">↩ リセット</button></div>';
+  }
+  return h;
+}
+
+function CA_adrm(v){S.cc.ambAtkDrm=parseInt(v);S.cc.ambRes=null;Draw();}
+function CA_ddrm(v){S.cc.ambDefDrm=parseInt(v);S.cc.ambRes=null;Draw();}
+function CA_atk(v){S.cc.ambAtk=parseInt(v);S.cc.ambRes=null;Draw();}
+function CA_atkR(v){CA_atk(v);}
+function CA_defR(v){CA_def(v);}
+function CA_def(v){S.cc.ambDef=parseInt(v);S.cc.ambRes=null;Draw();}
+function CS_ter(v){S.cc.terrain=v;S.cc.ambRes=null;Draw();}
+function CS_drm(v){S.cc.adrm=parseInt(v);S.cc.res=null;Draw();}
+function CS_rd(v){S.cc.rd=parseInt(v);S.cc.res=null;Draw();}
+function CS_rdR(v){CS_rd(v);}
+function CS_wdR(v){CS_wd(v);}
+function CS_wd(v){S.cc.wd=parseInt(v);S.cc.res=null;Draw();}
+function CSTAT(s){
+  if(s==="elim")return{t:"攻撃成功！防御側除去",c:"#cc3333",i:"💀"};
+  if(s==="cas")return{t:"損耗(防御側1ユニット)",c:"#cc8800",i:"☠"};
+  return{t:"効果なし",c:"#334455",i:"—"};
+}
+function CP_nat(v){S.cc.promo.nat=v;Draw();}
+function CP_mor(v){S.cc.promo.mor=v;Draw();}
+function CP_dr(v){S.cc.promo.dr=v;Draw();}
+function CP_drR(v){CP_dr(v);}
+function CS(k,v){S.cc[k]=v;S.cc.res=null;Draw();}
+function CS_ter(v){S.cc.terrain=v;S.cc.ambRes=null;Draw();}
+function CS_die(k,v){S.cc[k]=v;S.cc.res=null;Draw();}
+function CAMB(k,v){S.cc[k]=v;S.cc.ambRes=null;Draw();}
+function CAMBJUDGE(){
+  var c=S.cc,am=c.ambAtk+c.ambAtkDrm,dm=c.ambDef+c.ambDefDrm,diff=am-dm;
+  if(diff<=-3)c.ambRes="atk";
+  else if(diff>=3)c.ambRes="def";
+  else c.ambRes="none";
+  Draw();
+}
+function CNPAD(side,d){
+  var c=S.cc;
+  if(d==="C")c[side]=0;
+  else if(d==="BS")c[side]=Math.floor(c[side]/10);
+  else{var n=c[side]*10+parseInt(d);if(n<=99)c[side]=n;}
+  c.res=null;Draw();
+}
+function CRES(){S.cc.res=null;S.cc.rd=0;S.cc.wd=0;S.cc.casualNat=null;S.cc.casualUnit=null;Draw();}
+function CCN(nat){S.cc.casualNat=nat;S.cc.casualUnit=null;Draw();}
+function CCU(idx){
+  var cm=CASUAL_MAP[S.cc.casualNat]||{},keys=Object.keys(cm);
+  if(idx===-1)S.cc.casualUnit="HS";
+  else S.cc.casualUnit=keys[idx]||null;
+  Draw();
+}
+function CJUDGE(){
+  var c=S.cc,r=c.rd,w=c.wd;if(!r||!w)return;
+  function ratio(a,d){var rv=a/d;if(rv>=6)return 7;if(rv>=5)return 6;if(rv>=4)return 5;if(rv>=3)return 4;if(rv>=2)return 3;if(rv>=1)return 2;if(rv>=0.5)return 1;return 0;}
+  var ri=ratio(c.af,c.df),elim=CCT_N[ri];
+  var raw=r+w,mod=raw+c.adrm;
+  var st=mod<elim?"elim":mod===elim?"cas":"miss";
+  S.cc.res={raw:raw,mod:mod,st:st,pro:raw===2};Draw();
+}
+
+// =====================================================
+// RALLY PAGE
+// =====================================================
+function RALLY_PAGE(){
+  var rl=S.rally;
+  var drm=(rl.self?1:rl.ldr)+(rl.bld?-1:0)+(rl.dm?4:0);
+  var h="";
+  h+='<div class="card"><div class="sh">回復種別</div><div class="btns">';
+  h+='<button class="b'+(rl.self?" on":"")+'" onclick="RS(\'self\',true)">自己回復(+1DRM)</button>';
+  h+='<button class="b'+(rl.self?"":" on")+'" onclick="RS(\'self\',false)">指揮官回復(LDR)</button>';
+  h+='</div>';
+  if(rl.self){
+    h+='<div class="infobox gld" style="margin-top:6px">ℹ️ 指揮官誕生(Field Promotion)は、自己回復時に「指揮官が同一ヘクスにスタックしていない」場合のみ発生(DR=2時)。指揮官スタックありの場合は発生しない。</div>';
+  }
+  if(!rl.self){
+    h+='<div class="lbl">指揮官修正</div><div class="btns">';
+    [["−1",-1],["−2",-2],["+1(6+1)",1]].forEach(function(t){h+='<button class="b sm'+(rl.ldr===t[1]?" on":"")+'" onclick="RS(\'ldr\','+t[1]+')">'+t[0]+'</button>';});
+    h+='</div>';
+  }
+  h+='</div>';
+  h+='<div class="card"><div class="sh">ユニット設定</div>';
+  h+='<div class="lbl">混乱士気値(カウンター裏面)</div><div class="btns">';
+  [5,6,7,8,9].forEach(function(v){h+='<button class="b sm'+(rl.bm===v?" on":"")+'" onclick="RS(\'bm\','+v+')">'+v+'</button>';});
+  h+='</div><div class="btns">';
+  h+='<button class="b sm'+(rl.bld?" on":"")+'" onclick="RT(\'bld\')">林・建物内(−1)</button>';
+  h+='<button class="b sm red'+(rl.dm?" on":"")+'" onclick="RT(\'dm\')">DM状態(+4)</button>';
+  h+='</div></div>';
+  h+='<div class="card card-alt" style="font-size:11px;color:#8899aa">混乱士気値'+rl.bm+' / 合計DRM+'+(drm)+'</div>';
+  h+='<div class="card"><div class="sh">回復ダイス</div>';
+  h+='<div class="notebox"><div style="color:#c8a032;white-space:nowrap">✨ DR2(1-1)</div><div style="color:#8899aa">→ 自動回復成功'+(rl.self?" + 指揮官誕生判定":"")+'</div><div style="color:#cc3333;white-space:nowrap">💀 DR12(6-6)</div><div style="color:#8899aa">→ 自動失敗＋損耗</div></div>';
+  h+='<div class="lbl">🟥 色付きダイス</div>';
+  h+=rDiceHTML(rl.rd,true,'RDr');
+  h+='<div class="lbl" style="margin-top:9px">⬜ 白ダイス</div>';
+  h+=rDiceHTML(rl.wd,false,'RDw');
+  if(rl.rd&&rl.wd)h+='<button class="judgbtn" onclick="RJUDGE()">▶ 判定実行</button>';
+  else h+='<div style="color:#8899aa;font-size:11px;padding:8px 0">← 両ダイスを入力して判定</div>';
+  h+='</div>';
+  if(rl.res){
+    var R=rl.res,sm=RSTAT(R.st);
+    h+='<div class="res" style="border-color:'+sm.c+'">';
+    h+='<div class="rrow"><div><div class="lbl">修正前DR</div><div class="rv" style="color:#8899aa">'+R.raw+'</div></div>';
+    h+='<span class="rarr">→</span><div><div class="lbl">修正後DR(+'+(rl.self?1:rl.ldr)+(rl.bld?"-1":"")+(rl.dm?"+4":"")+'='+(drm)+')</div><div class="rv" style="color:#c8a032">'+R.mod+'</div></div></div>';
+    h+='<div class="rmain" style="background:#0d0d14;border:1px solid '+sm.c+'44;color:'+sm.c+'">'+sm.i+' '+sm.t+'</div>';
+    if(R.pro){
+      var pr=rl.promo||{nat:'GER',mor:7,dr:0};
+      h+='<div style="border-top:1px solid #1a1a2e;margin-top:10px;padding-top:10px">';
+      h+='<div style="font-size:11px;color:#c8a032;font-weight:bold;margin-bottom:8px">🎖 指揮官誕生(Field Promotion)判定</div>';
+      h+='<div class="lbl">国籍</div><div class="seg" style="margin-bottom:8px">';
+      [{k:'USA',v:'🇺🇸 米'},{k:'GER',v:'🇩🇪 独'},{k:'SOV',v:'🇷🇺 ソ'}].forEach(function(n){
+        h+='<button class="b'+(pr.nat===n.k?' on gld':'')+'" data-k="'+n.k+'" onclick="PR_nat(this.dataset.k)">'+n.v+'</button>';
+      });
+      h+='</div>';
+      h+='<div class="lbl">通常士気値</div><div class="seg" style="margin-bottom:8px">';
+      [5,6,7,8,9].forEach(function(v){
+        h+='<button class="b'+(pr.mor===v?' on gld':'')+'" onclick="PR_mor('+v+')">'+v+'</button>';
+      });
+      h+='</div>';
+      var pdrm=promoCalc(pr.nat,pr.mor,true);
+      h+='<div style="font-size:10px;color:#8899aa;margin-bottom:6px">drm合計：<b style="color:#c8a032">'+(pdrm>=0?'+':'')+pdrm+'</b>(混乱回復+1・士気値・国籍修正)</div>';
+      h+='<div class="lbl">dr入力(1個)</div>'+rDiceHTML(pr.dr,false,'PR_drR');
+      if(pr.dr){
+        var ldr=promoResult(pr.dr,pdrm);
+        if(ldr){
+          h+='<div style="background:linear-gradient(180deg,#1a1006,#2a1a0a);border:2px solid #c8a032;border-radius:4px;padding:10px">';
+          h+='<div style="color:#c8a032;font-size:10px;font-weight:bold;margin-bottom:3px">🎖 指揮官誕生！</div>';
+          h+='<div style="font-size:24px;font-weight:bold;color:#FFD700;text-shadow:0 0 12px #c8a03288;font-family:monospace">'+ldr+'</div>';
+          h+='<div style="font-size:10px;color:#8899aa;margin-top:3px">dr'+pr.dr+(pdrm>=0?'+':'')+pdrm+'='+(pr.dr+pdrm)+'</div>';
+          h+='</div>';
+        } else {
+          h+='<div style="background:#0d0d14;border:1px solid #333;border-radius:3px;padding:8px;color:#556677;font-size:12px">修正後dr'+(pr.dr+pdrm)+' → 誕生なし(7以上)</div>';
+        }
+      }
+      h+='</div>';
+    }
+    // ④ DR12損耗処理UI
+    if(rl.res.st==="a12"){
+      h+='<div style="border-top:1px solid #1a1a2e;margin-top:10px;padding-top:10px">';
+      h+='<div style="font-size:10px;color:#0055aa;font-weight:bold;margin-bottom:6px">🔽 損耗処理(DR12自動失敗)</div>';
+      h+='<div class="lbl">国籍</div><div class="btns">';
+      [{k:"USA",v:"🇺🇸 米"},{k:"GER",v:"🇩🇪 独"},{k:"SOV",v:"🇷🇺 ソ"}].forEach(function(n){
+        h+='<button class="b sm'+(rl.casualNat===n.k?" on":"")+'" data-k="'+n.k+'" onclick="RCN(this.dataset.k)">'+n.v+'</button>';
+      });
+      h+='</div>';
+      if(rl.casualNat){
+        var rcm=CASUAL_MAP[rl.casualNat]||{},rcmKeys=Object.keys(rcm);
+        h+='<div class="lbl">損耗ユニット</div><div class="btns">';
+        rcmKeys.forEach(function(u,idx){
+          h+='<button class="b sm'+(rl.casualUnit===u?" on":"")+'" onclick="RCU('+idx+')">'+u+'</button>';
+        });
+        h+='<button class="b sm'+(rl.casualUnit==="HS"?" on red":"")+'" onclick="RCU(-1)">HS・操作班(→除去)</button>';
+        h+='</div>';
+        if(rl.casualUnit&&rl.casualUnit!=="HS"){
+          var rafter=rcm[rl.casualUnit];
+          if(rafter)h+='<div style="background:#0d0d14;border:1px solid #0055aa33;border-radius:3px;padding:7px;font-size:12px">'+rl.casualUnit+' → <b style="color:#c8a032">'+rafter+'</b> 除去(KIA)</div>';
+        } else if(rl.casualUnit==="HS"){
+          h+='<div style="background:#0d0d14;border:1px solid #cc333333;border-radius:3px;padding:7px;font-size:12px">HS・操作班 → <b style="color:#cc3333">即時除去(KIA)</b></div>';
+        }
+      }
+      h+='</div>';
+    }
+    h+='<button class="resetbtn" onclick="RRES()">↩ リセット</button></div>';
+  }
+  return h;
+}
+function RSTAT(s){
+  if(s==="ok"||s==="a2")return{t:s==="a2"?"自動回復成功(DR2)":"回復成功！",c:"#00aa55",i:"👍"};
+  if(s==="fail")return{t:"回復失敗(混乱継続)",c:"#cc8800",i:"😵"};
+  return{t:"自動失敗＋損耗(DR12)",c:"#aa0000",i:"☠"};
+}
+
+function PR_nat(v){S.rally.promo.nat=v;S.rally.promo.res=null;Draw();}
+function PR_mor(v){S.rally.promo.mor=v;S.rally.promo.res=null;Draw();}
+function PR_dr(v){S.rally.promo.dr=v;Draw();}
+function PR_drR(v){PR_dr(v);}
+function RS(k,v){S.rally[k]=v;S.rally.res=null;Draw();}
+function RT(k){S.rally[k]=!S.rally[k];S.rally.res=null;Draw();}
+function RD(k,v){S.rally[k]=v;S.rally.res=null;Draw();}
+function RDr(v){RD('rd',v);}
+function RDw(v){RD('wd',v);}
+function RRES(){S.rally.res=null;S.rally.rd=0;S.rally.wd=0;S.rally.casualNat=null;S.rally.casualUnit=null;Draw();}
+function RCN(nat){S.rally.casualNat=nat;S.rally.casualUnit=null;Draw();}
+function RCU(idx){
+  var cm=CASUAL_MAP[S.rally.casualNat]||{},keys=Object.keys(cm);
+  if(idx===-1)S.rally.casualUnit="HS";
+  else S.rally.casualUnit=keys[idx]||null;
+  Draw();
+}
+function RJUDGE(){
+  var rl=S.rally,r=rl.rd,w=rl.wd;if(!r||!w)return;
+  var drm=(rl.self?1:rl.ldr)+(rl.bld?-1:0)+(rl.dm?4:0);
+  var raw=r+w,mod=raw+drm,st;
+  if(raw===2)st="a2";else if(raw===12)st="a12";
+  else if(mod<=rl.bm)st="ok";else st="fail";
+  if(raw===2&&rl.self)S.rally.promo={show:true,nat:'GER',mor:7,dr:0,res:null};
+S.rally.res={raw:raw,mod:mod,st:st,pro:raw===2&&rl.self};Draw();
+}
+
+// =====================================================
+// MOVE PAGE
+// =====================================================
+function MOVE_PAGE(){
+  var mv=S.move;
+  var h="";
+
+  // DC配置フロー(最上部)
+  h+='<div class="card"><div class="sh">💣 DC(爆薬)配置フロー(MPh)</div>';
+  h+='<div class="lbl" style="margin-top:8px">配置ユニットのクラス(X#に影響)</div><div class="btns">';
+  h+='<button class="b'+(mv.dcElite?' on grn':'')+'" data-k="dcElite" data-v="1" onclick="MV_dat(this)">エリート(X#12)</button>';
+  h+='<button class="b red'+(mv.dcElite?'':' on')+'" data-k="dcElite" data-v="0" onclick="MV_dat(this)">エリート以外(X#10)</button>';
+  h+='</div>';
+  h+='<div class="lbl">CX(疲労状態)</div><div class="btns">';
+  h+='<button class="b'+(mv.dcCX?'':' on')+'" data-k="dcCX" data-v="0" onclick="MV_dat(this)">CXなし</button>';
+  h+='<button class="b red'+(mv.dcCX?' on':'')+'" data-k="dcCX" data-v="1" onclick="MV_dat(this)">CX状態(爆発時IFT DR+1)</button>';
+  h+='</div>';
+  h+='</div>';
+  h+='<div class="lbl">DFF/SFF/FPFの結果</div><div class="btns">';
+  h+='<button class="b'+(mv.dcDff==="ok"?' on grn':'')+'" data-k="dcDff" data-v="ok" onclick="MV_dat(this)">✅ 耐えた(配置成功)</button>';
+  h+='<button class="b red'+(mv.dcDff==="pin"?' on':'')+'" data-k="dcDff" data-v="pin" onclick="MV_dat(this)">❌ クギ付け(配置失敗)</button>';
+  h+='<button class="b red'+(mv.dcDff==="brk"?' on':'')+'" data-k="dcDff" data-v="brk" onclick="MV_dat(this)">❌ 混乱(配置失敗)</button>';
+  h+='</div>';
+  if(mv.dcDff==="ok"){
+    h+='<div style="background:#0a1a0a;border:2px solid #00aa55;border-radius:3px;padding:9px;margin-top:4px">';
+    h+='<div style="color:#00aa55;font-weight:bold;margin-bottom:4px">✅ DC配置成功</div>';
+    h+='<div style="font-size:11px;color:#8899aa">DCカウンターを目標ヘクスに置く。<br>';
+    h+='AFPh(前進射撃フェイズ)に30FPで爆発解決。<br>';
+    h+='X#：'+(mv.dcElite?'12(エリート)':'10(エリート以外)')+(mv.dcCX?'　爆発時DRM+1(CX)':'')+'</div>';
+    h+='</div>';
+  } else if(mv.dcDff==="pin"||mv.dcDff==="brk"){
+    h+='<div style="background:#1a0a0a;border:2px solid #cc3333;border-radius:3px;padding:9px;margin-top:4px">';
+    h+='<div style="color:#cc3333;font-weight:bold">❌ DC配置失敗 — DCカウンターは置かれない</div>';
+    h+='</div>';
+  }
+  h+='<div class="infobox" style="margin-top:8px;font-size:10px">目標地形へのTEM適用(生垣はDC自体に不適用)。指揮官DRM不適用。LOS妨害不適用。</div>';
+  h+='</div>';
+
+  // 煙幕手榴弾
+  h+='<div class="card"><div class="sh">💨 煙幕手榴弾(Smoke)設置</div>';
+  h+='<div class="infobox gld">使用可能フェイズ：PFPh(準備射撃)またはMPh(移動)中に設置可能。設置にMFコストはかからないが射撃行動扱いのため、同一フェイズでの他の射撃と併用不可。</div>';
+  h+='<table class="mv-table" style="margin-top:8px"><tr><th>国籍・ユニット</th><th>煙幕指数</th><th>配置条件</th></tr>';
+  h+='<tr><td>🇺🇸 米 6-6-6(1)</td><td class="v">3</td><td style="font-size:10px;color:#8899aa">dr≤3で設置成功</td></tr>';
+  h+='<tr><td>🇺🇸 米 7-4-7(E)</td><td class="v">3</td><td style="font-size:10px;color:#8899aa">dr≤3で設置成功</td></tr>';
+  h+='<tr><td>🇺🇸 米 5-4-6(2)</td><td class="v">2</td><td style="font-size:10px;color:#8899aa">dr≤2で設置成功</td></tr>';
+  h+='<tr><td>🇩🇪 独 5-4-8(E)</td><td class="v">2</td><td style="font-size:10px;color:#8899aa">dr≤2で設置成功</td></tr>';
+  h+='<tr><td>🇩🇪 独 4-6-7(1)</td><td class="v">1</td><td style="font-size:10px;color:#8899aa">dr≤1で設置成功</td></tr>';
+  h+='</table>';
+  h+='<div class="infobox" style="margin-top:6px">煙幕カウンターはLOS妨害+2DRM。MPh終了時に除去。設置ヘクスまたは隣接ヘクスへの設置が可能(LOS確認必要)。</div>';
+  h+='</div>';
+
+  // 移動コスト
+  h+='<div class="card"><div class="sh">地形別移動コスト(MF)</div>';
+  h+='<div class="infobox" style="margin-bottom:6px">歩兵の基本MF：統制=4MF / クギ付け=2MF / 急速歩(Double Time)=+2MF(CX状態になる)</div>';
+  h+='<table class="mv-table"><tr><th>地形</th><th>MF消費</th><th>備考</th></tr>';
+  MOVE_COST.forEach(function(r){
+    h+='<tr><td>'+r.ter+'</td><td class="v">'+r.inf+'</td><td style="font-size:10px;color:#8899aa">'+r.note+'</td></tr>';
+  });
+  h+='</table></div>';
+
+  // SW重量
+  h+='<div class="card"><div class="sh">SW携行重量(PP)</div>';
+  h+='<table class="mv-table"><tr><th>ユニット</th><th>IPC(携行ポイント)</th></tr>';
+  h+='<tr><td>MMC(分隊)</td><td class="v">3PP</td></tr>';
+  h+='<tr><td>HS(半個分隊)</td><td class="v">2PP</td></tr>';
+  h+='<tr><td>SMC(指揮官)</td><td class="v">1PP</td></tr>';
+  h+='</table>';
+  h+='<table class="mv-table" style="margin-top:4px"><tr><th>SW</th><th>PP</th></tr>';
+  SWT.forEach(function(s){h+='<tr><td>'+s.lbl+'</td><td class="v">'+s.pp+'PP</td></tr>';});
+  h+='<tr><td>DC 30-1(爆薬)</td><td class="v">3PP</td></tr>';
+  h+='</table>';
+  h+='<div class="infobox" style="margin-top:6px">IPC超過のSWは携行不可。潰走時はIPC超過分をそのヘクスに放棄。</div>';
+  h+='</div>';
+
+  // 移動ペナルティ
+  h+='<div class="card"><div class="sh">移動ルール・ペナルティ</div>';
+  h+='<div class="infobox gld" style="margin-bottom:5px"><b style="color:#c8a032">警戒移動(Assault Move)</b>：最大1ヘクス。開豁地でもFFMO不適用。DFF対象。</div>';
+  h+='<div class="infobox" style="margin-bottom:5px"><b style="color:#0055aa">急速歩移動(Double Time)</b>：MF+2(計6MF)。CX状態になり射撃不可。</div>';
+  h+='<div class="infobox"><b style="color:#cc8800">匍匐前進(Low Crawl)</b>：1ヘクスのみ・全MF消費。残留FP攻撃を受けない。</div>';
+  h+='</div>';
+  return h;
+}
+
+function MV(k,v){S.move[k]=v;Draw();}
+function MV_dat(el){
+  var k=el.dataset.k,v=el.dataset.v;
+  if(v==="1")v=true;else if(v==="0")v=false;
+  S.move[k]=v;Draw();
+}
+
+// =====================================================
+// ROUT PAGE
+// =====================================================
+function ROUT_PAGE(){
+  return '<div class="card"><div class="sh">🏃 潰走(RtPh)ルール</div>'
+    +'<div class="infobox gld"><b style="color:#c8a032">潰走とは</b>：混乱状態のユニットが、より安全な場所へ退避すること。</div>'
+    +'<div class="infobox" style="margin-top:5px"><b style="color:#0055aa">潰走が強制される条件</b><br>'
+    +'・確認された敵と同一ヘクスまたは隣接ヘクスにいる<br>'
+    +'・開豁地ヘクスで敵のLOS内にいる(DMカウンターも追加)</div>'
+    +'<div class="infobox" style="margin-top:5px"><b style="color:#0055aa">潰走先</b>：6MF以内で最も近い林または建物ヘクスへ移動。確認された敵に近づく・新たに隣接する方向は選択不可(同距離は可)。</div>'
+    +'<div class="infobox" style="margin-top:5px"><b style="color:#cc8800">開豁地通過時：阻止射撃</b><br>'
+    +'統制状態の敵がLOS内・通常射程内・無修正1FP以上で射撃可能な場合、NMCを強制。失敗でそのRtPh以上の潰走不可。</div>'
+    +'<div class="infobox" style="margin-top:5px"><b style="color:#cc3333">除去される条件</b><br>'
+    +'・潰走先が存在しない(敵に近づかずに移動できない)<br>'
+    +'・潰走先が確認された敵に隣接している<br>'
+    +'・匍匐後退先が確認された敵に隣接している</div>'
+    +'<div class="infobox" style="margin-top:5px"><b style="color:#8899aa">⚠ 注意</b><br>'
+    +'・混戦(Melee)状態のユニットは潰走しない<br>'
+    +'・SW過積載の場合、超過分をそのヘクスに放棄してから潰走<br>'
+    +'・匍匐後退(Low Crawl)：1ヘクスのみ・全MF消費・阻止なし</div>'
+    +'</div>';
+}
+
+// =====================================================
+// APH PAGE
+// =====================================================
+function APH_PAGE(){
+  return '<div class="card"><div class="sh">⚔ 突撃(APh)ルール</div>'
+    +'<div class="infobox gld"><b style="color:#c8a032">突撃とは</b>：MPh後に、敵ユニットのいるヘクスへ進入して白兵戦(CC)を行うための移動フェイズ。</div>'
+    +'<div class="infobox" style="margin-top:5px"><b style="color:#0055aa">突撃可能な条件</b><br>'
+    +'・統制状態のユニットのみ<br>'
+    +'・目標ヘクスへの通常移動コストと同じMFを消費(1ヘクスのみ移動可)<br>'
+    +'・PFPh/AFPhで射撃したユニットは突撃不可</div>'
+    +'<div class="infobox" style="margin-top:5px"><b style="color:#0055aa">突撃時のDFF</b><br>'
+    +'防御側はDFF(防御臨機射撃)を行える。ただしFirst Fireカウンターが必要。<br>'
+    +'突撃してきたユニットへのDFFには通常の修正が適用される。</div>'
+    +'<div class="infobox" style="margin-top:5px"><b style="color:#cc8800">CCカウンターの設置</b><br>'
+    +'突撃成功後、そのヘクスにCCカウンターを置く。CCPhに白兵戦を解決する。</div>'
+    +'<div class="infobox" style="margin-top:5px"><b style="color:#cc3333">⚠ 注意</b><br>'
+    +'・クギ付け状態・混乱状態のユニットは突撃不可<br>'
+    +'・突撃したユニットはAPh終了まで移動扱い(DFF対象)<br>'
+    +'・林・建物ヘクスへの突撃ではCCPh開始時に不意打ち判定</div>'
+    +'</div>';
+}
+
+// =====================================================
+// REF PAGE(早見表)
+// =====================================================
+function REF_PAGE(){
+  var h="";
+  // IFTテーブル
+  h+='<div class="card"><div class="sh">IFT(歩兵射撃表)</div>';
+  h+='<div style="overflow-x:auto"><table class="ift-table">';
+  h+='<tr><th>DR</th>';
+  IFT_LBL.forEach(function(l){h+='<th>'+l+'</th>';});
+  h+='</tr>';
+  for(var row=0;row<IFT.length;row++){
+    h+='<tr><th>'+(row+2)+'</th>';
+    IFT[row].forEach(function(cell){
+      var cls=cell==="-"?"":cell==="PTC"?"ptc":(cell==="MC"||cell.indexOf("MC")>=0)?"mc":cell.indexOf("KIA")>=0?"kia":cell[0]==="K"?"k":"";
+      h+='<td class="'+cls+'">'+cell+'</td>';
+    });
+    h+='</tr>';
+  }
+  h+='</table></div>';
+  h+='<div class="infobox" style="margin-top:5px;font-size:10px">K/#=損耗1個+残り全員MC(DRM+#) / #KIA=最低#個除去+残全員混乱DM</div>';
+  h+='</div>';
+
+  // ④ 地形TEM + MF消費値 + ② LOS遮断
+  h+='<div class="card"><div class="sh">地形効果修正値(TEM)</div>';
+  h+='<table class="mv-table"><tr><th>地形</th><th>TEM</th><th>MF消費</th><th>LOS</th></tr>';
+  [
+    {t:"開豁地・道路",v:0,mf:"1MF(道路ボーナス+1MF)",l:"妨害なし"},
+    {t:"繁み",v:0,mf:"2MF",l:"+1DRM妨害"},
+    {t:"麦バタケ(6〜9月)",v:0,mf:"1.5MF",l:"+1DRM妨害"},
+    {t:"果樹園",v:0,mf:"1MF",l:"+1DRM妨害"},
+    {t:"林ヘクスサイド",v:0,mf:"—",l:"+1DRM妨害"},
+    {t:"林ヘクス内",v:1,mf:"2MF",l:"遮断",los_block:true},
+    {t:"生垣(ヘクスサイド)",v:1,mf:"+1MF",l:"妨害なし"},
+    {t:"丘(高度優位性)",v:1,mf:"+1MF(登坂)",l:"妨害なし"},
+    {t:"木造建物",v:2,mf:"2MF",l:"遮断",los_block:true},
+    {t:"石造建物",v:3,mf:"2MF",l:"遮断",los_block:true},
+    {t:"煙幕手榴弾",v:0,mf:"+1MF(煙幕内)",l:"+2DRM妨害"},
+    {t:"完全煙幕",v:0,mf:"—",l:"+3DRM妨害"}
+  ].forEach(function(r){
+    var lc=r.los_block?"#cc3333":"#0055aa";
+    h+='<tr><td>'+r.t+'</td><td class="v">'+(r.v>0?"+"+r.v:"±0")+'</td><td style="color:#8899aa;font-size:10px">'+r.mf+'</td><td style="color:'+lc+';text-align:right;font-size:10px">'+r.l+'</td></tr>';
+  });
+  h+='</table></div>';
+
+  // CCT(14列)
+  h+='<div class="card"><div class="sh">CCT(白兵戦表)</div>';
+  h+='<div style="overflow-x:auto"><table class="ift-table">';
+  h+='<tr><th>戦闘比</th>';
+  CCT_R.forEach(function(r){h+='<th>'+r+'</th>';});
+  h+='</tr>';
+  h+='<tr><th>除去#</th>';
+  CCT_N.forEach(function(n){h+='<td class="mc">'+n+'</td>';});
+  h+='</tr></table></div>';
+  h+='<div class="infobox" style="margin-top:5px;font-size:10px">修正後DR &lt; 除去# → 除去 / = 除去# → 損耗 / &gt; 除去# → 効果なし</div>';
+  h+='</div>';
+
+  // ⑤ ELRチェーン + 損耗追加
+  h+='<div class="card"><div class="sh">ELR超過クラス低下・損耗チェーン</div>';
+  Object.keys(UNITS).forEach(function(nat){
+    var ud=UNITS[nat];
+    h+='<div style="margin-bottom:8px"><div style="font-size:11px;color:'+ud.col+';margin-bottom:4px;font-weight:bold">'+ud.lbl+'</div>';
+    h+='<table class="mv-table"><tr><th>元ユニット</th><th>→ ELR超過</th><th>→ 損耗(HS)</th></tr>';
+    ud.mmc.filter(function(m){return !m.hs;}).forEach(function(m){
+      var elrTo=ud.elr.filter(function(e){return e.f===m.lbl;})[0];
+      var casTo=CASUAL_MAP[nat]&&CASUAL_MAP[nat][m.lbl];
+      h+='<tr><td style="color:#ccddee">'+m.lbl+'</td>';
+      h+='<td style="color:#c8a032">'+(elrTo?elrTo.t:"—")+'</td>';
+      h+='<td style="color:#cc8800">'+(casTo||"—")+'</td></tr>';
+    });
+    h+='</table></div>';
+  });
+  h+='</div>';
+
+  // ⑥ SMC負傷テーブル
+  h+='<div class="card"><div class="sh">SMC(指揮官)負傷・クラス低下</div>';
+  h+='<div class="infobox gld" style="margin-bottom:8px">SMCが損耗結果を受けた場合、負傷判定drを実施。すでに負傷中は+1drm。</div>';
+  h+='<table class="mv-table"><tr><th>修正後dr</th><th>結果</th><th>効果</th></tr>';
+  h+='<tr><td>1〜4</td><td style="color:#cc8800">負傷(Wound)</td><td style="font-size:10px;color:#8899aa">Woundカウンター。MF3・IPC0・士気値と指揮能力修正が各1悪化</td></tr>';
+  h+='<tr><td>5〜6</td><td style="color:#cc3333">重傷・除去</td><td style="font-size:10px;color:#8899aa">カウンター除去。同スタックのMMCにLLMC/LLTCが発生する可能性あり</td></tr>';
+  h+='</table>';
+  h+='<div style="margin-top:8px;font-size:10px;color:#8899aa">※ 指揮官には「ELR超過クラス低下」は発生しない。損耗後は能力値が1悪化するのみ。</div>';
+  h+='</div>';
+  return h;
+}
+
+function SCEN_PAGE(){
+  var s=S.scen,h="";
+  h+='<div class="card"><div class="sh">シナリオ選択</div><div style="display:flex;flex-wrap:wrap">';
+  SCN.forEach(function(sc){
+    h+='<button class="scbtn'+(s.sel===sc.id?" on":"")+'" onclick="SSEL(\''+sc.id+'\')">';
+    h+='<div style="font-weight:bold;color:#c8a032">'+sc.id+'</div>';
+    h+='<div style="font-size:10px;margin-top:2px">'+sc.jp+'</div></button>';
+  });
+  h+='</div></div>';
+  if(s.sel){
+    var sc=SCN.filter(function(x){return x.id===s.sel;})[0];
+    h+='<div class="card">';
+    h+='<div style="font-size:10px;color:#8899aa">'+sc.id+' / '+sc.en+'</div>';
+    h+='<div style="font-size:15px;font-weight:bold;color:#c8a032;margin:4px 0 7px">'+sc.jp+'</div>';
+    h+='<div style="font-size:11px;color:#8899aa;margin-bottom:7px">📍 '+sc.loc+'　📅 '+sc.dt+'　⏱ '+sc.trn+'ターン</div>';
+    h+='<div class="vbox"><div style="font-size:10px;color:#0055aa;margin-bottom:3px">🏆 勝利条件</div>'+sc.vic+'</div>';
+    if(sc.bal)h+='<div class="infobox" style="margin-bottom:7px"><span style="color:#c8a032">⚖ バランス</span>　米：'+sc.bal.us+'　独/ソ：'+sc.bal.ger+'</div>';
+    if(sc.ssr&&sc.ssr.length)sc.ssr.forEach(function(r,i){h+='<div class="ssr"><span style="color:#c8a032">SSR'+(i+1)+'</span> '+r+'</div>';});
+    h+='</div>';
+    Object.keys(sc.f).forEach(function(nat){
+      var f=sc.f[nat],nc={USA:"#4477aa",GER:"#aa9944",SOV:"#aa4444"}[nat]||"#666";
+      var nl={USA:"🇺🇸 米軍",GER:"🇩🇪 独軍",SOV:"🇷🇺 ソ連"}[nat]||nat;
+      h+='<div class="card"><div style="font-size:12px;font-weight:bold;color:'+nc+';margin-bottom:5px">'+nl+' [ELR:'+f.elr+']</div>';
+      f.u.forEach(function(u){h+='<div style="font-size:11px;color:#8899aa;border-left:2px solid '+nc+'33;padding-left:6px;margin-bottom:3px">'+u+'</div>';});
+      h+='</div>';
+    });
+  }
+  return h;
+}
+function SSEL(id){S.scen.sel=id;Draw();}
+
+// =====================================================
+// UNIT PAGE
+// =====================================================
+function UNIT_PAGE(){
+  var u=S.unit,d=UNITS[u.nat],h="";
+  h+='<div class="card"><div class="sh">国籍</div>';
+  h+='<div style="display:flex;gap:5px;margin-bottom:9px">';
+  Object.keys(UNITS).forEach(function(k){h+='<button class="b'+(u.nat===k?" on":"")+'" style="flex:1" onclick="US(\'nat\',\''+k+'\')">'+UNITS[k].lbl+'</button>';});
+  h+='</div>';
+  h+='<div class="btns">';
+  h+='<button class="b'+(u.tab==="mmc"?" on":"")+'" onclick="US(\'tab\',\'mmc\')">MMC(分隊・HS)</button>';
+  h+='<button class="b'+(u.tab==="smc"?" on":"")+'" onclick="US(\'tab\',\'smc\')">SMC(指揮官)</button>';
+  h+='<button class="b'+(u.tab==="sw"?" on":"")+'" onclick="US(\'tab\',\'sw\')">SW(支援火器)</button>';
+  h+='</div></div>';
+  var nc=d.col;
+  if(u.tab==="mmc"){
+    d.mmc.forEach(function(m){
+      h+='<div class="uc" style="border-left-color:'+(m.green?"#cc8800":nc)+'"><div class="ul">'+m.lbl;
+      if(m.af)h+='<span style="font-size:9px;background:#c8a03222;border:1px solid #c8a03244;color:#c8a032;padding:1px 5px;border-radius:2px;margin-left:4px">FP下線(AF)</span>';
+      if(m.sr)h+='<span style="font-size:9px;background:#0055aa22;border:1px solid #0055aa44;color:#0055aa;padding:1px 5px;border-radius:2px;margin-left:4px">自己回復</span>';
+      if(m.ei)h+='<span style="font-size:9px;background:#c8a03222;border:1px solid #c8a03244;color:#c8a032;padding:1px 5px;border-radius:2px;margin-left:4px">ELR免除</span>';
+      if(m.hs)h+='<span style="font-size:9px;background:#1a1a2e;border:1px solid #1a1a2e;color:#8899aa;padding:1px 5px;border-radius:2px;margin-left:4px">HS</span>';
+      if(m.green)h+='<span style="font-size:9px;background:#cc880022;border:1px solid #cc880044;color:#cc8800;padding:1px 5px;border-radius:2px;margin-left:4px">未熟兵</span>';
+      h+='</div>';
+      h+='<div class="us"><span>FP <b style="color:#ccddee">'+m.fp+'</b></span><span>射程 <b style="color:#ccddee">'+m.rng+'</b></span><span>士気 <b style="color:#ccddee">'+m.mor+'</b></span><span>混乱士気 <b style="color:#ccddee">'+m.bm+'</b></span>'+(m.smk?'<span>煙幕 <b style="color:#c8a032">'+m.smk+'</b></span>':'')+'</div>';
+      if(m.note)h+='<div style="font-size:9px;color:#8899aa;margin-top:2px">'+m.note+'</div>';
+      h+='</div>';
+    });
+    if(d.elr&&d.elr.length){
+      h+='<div class="card"><div style="font-size:10px;color:#0055aa;margin-bottom:5px">⬇ ELR超過クラス低下チェーン</div>';
+      d.elr.forEach(function(e){h+='<div style="font-size:11px;color:#8899aa;padding:2px 0">'+e.f+' → <b style="color:#c8a032">'+e.t+'</b></div>';});
+      h+='</div>';
+    }
+  }
+  if(u.tab==="smc"){
+    d.smc.forEach(function(s){
+      var cc=s.cmd<0?"#c8a032":s.cmd>0?"#cc3333":"#334455";
+      h+='<div class="uc" style="border-left-color:'+nc+'"><div class="ul">'+s.lbl+'</div>';
+      h+='<div class="us"><span>士気 <b style="color:#ccddee">'+s.mor+'</b></span><span>混乱士気 <b style="color:#ccddee">['+s.bm+']</b></span><span>指揮 <b style="color:'+cc+'">'+(s.cmd===0?"±0":s.cmd>0?"+"+s.cmd:s.cmd)+'</b></span></div>';
+      if(s.note)h+='<div style="font-size:9px;color:#8899aa;margin-top:2px">'+s.note+'</div>';
+      h+='</div>';
+    });
+  }
+  if(u.tab==="sw"){
+    SWT.forEach(function(s){
+      h+='<div class="card"><div class="ul">'+s.lbl+'</div>';
+      h+='<div class="us"><span>FP <b style="color:#ccddee">'+s.fp+'</b></span>'+(s.b<99?'<span>B# <b style="color:#cc8800">'+s.b+'</b></span>':'')+(s.x<99?'<span>X# <b style="color:#cc3333">'+s.x+'</b></span>':'')+'<span>ROF <b style="color:#ccddee">'+(s.rof||"—")+'</b></span><span>PP <b style="color:#ccddee">'+s.pp+'</b></span></div>';
+      h+='</div>';
+    });
+    h+='<div class="card"><div class="ul">DC 30-1(爆薬)</div>';
+    h+='<div class="us"><span>FP <b style="color:#ccddee">30</b></span><span>X# <b style="color:#cc3333">12(エリート以外10)</b></span><span>PP <b style="color:#ccddee">3</b></span></div>';
+    h+='<div style="font-size:10px;color:#8899aa;margin-top:3px">MPh配置→AFPh爆発。TEM適用(生垣除く)。CX時DRM+1。</div></div>';
+  }
+  return h;
+}
+function US(k,v){S.unit[k]=v;Draw();}
+
+// INIT
+window.onload=function(){TAB("pfph");};
+
+</script>
+</body>
+</html>
