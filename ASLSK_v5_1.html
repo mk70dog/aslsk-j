@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASL SK Judge v5.1</title>
+<style>
+  body { background: #0e1018; color: #ccddee; font-family: sans-serif; padding: 10px; }
+  .card { background: #1a1a2e; border: 1px solid #333; padding: 15px; margin-bottom: 10px; border-radius: 5px; }
+  .sh { font-weight: bold; color: #ffcc00; margin-bottom: 10px; border-bottom: 1px solid #444; }
+  .nav-row { display: flex; gap: 5px; margin-bottom: 10px; }
+  .nb { background: #222; border: 1px solid #444; color: #ccddee; padding: 8px; cursor: pointer; }
+  .nb.on { background: #444; border-color: #666; }
+  .lbl { font-size: 12px; color: #8899aa; margin-top: 10px; }
+  .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 5px; }
+  .npbtn { background: #2a2a40; border: 1px solid #444; color: white; padding: 10px; }
+</style>
+</head>
+<body>
+
+<div class="nav-row">
+  <button class="nb" onclick="selectTab('sk1')">#1</button>
+  <button class="nb" onclick="selectTab('sk2')">#2</button>
+</div>
+
+<div id="sk1-section" class="card">
+  <div class="sh">SK#1 INFANTRY</div>
+  <p>歩兵の判定用パネル...</p>
+</div>
+
+<div id="sk2-section" class="card" style="display:none;">
+  <div class="sh">SK#2 ORDNANCE FIRE</div>
+  <div class="lbl">To Hit (TH)</div>
+  <div class="numpad">
+    <button class="npbtn">DR</button>
+    <button class="npbtn">Mod</button>
+    <button class="npbtn">Result</button>
+  </div>
+  <div class="lbl">HE Effects</div>
+  <div style="padding:10px; background:#0a0e18; margin-top:5px;">
+    Result: --
+  </div>
+</div>
+
+<script>
+function selectTab(tabId) {
+  document.getElementById('sk1-section').style.display = (tabId === 'sk1') ? 'block' : 'none';
+  document.getElementById('sk2-section').style.display = (tabId === 'sk2') ? 'block' : 'none';
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  event.target.classList.add('on');
+}
+</script>
+</body>
+</html>
