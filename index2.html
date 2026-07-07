@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Judge Console Hub">
+<title>JUDGE CONSOLE HUB — Wargame Judge Tools / 判定支援ツール ハブ</title>
+<meta name="description" content="Fan-made judge/calculator consoles for tabletop wargames: ASL Starter Kit and Gunslinger. 個人制作の非公式判定支援ツール集。">
+<meta property="og:title" content="JUDGE CONSOLE HUB">
+<meta property="og:description" content="Fan-made judge/calculator consoles for tabletop wargames.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='16' fill='%230a0c14'/%3E%3Ctext x='50' y='68' font-size='60' text-anchor='middle' fill='%234499ee' font-family='monospace'%3E⚔%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='16' fill='%230a0c14'/%3E%3Ctext x='50' y='68' font-size='60' text-anchor='middle' fill='%234499ee' font-family='monospace'%3E⚔%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet"></noscript>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:
+    radial-gradient(ellipse at 30% 0%, #0d0d1a 0%, #0e1018 60%),
+    repeating-linear-gradient(115deg, rgba(0,0,0,0.10) 0px, rgba(0,0,0,0.10) 1px, transparent 1px, transparent 3px),
+    #0e1018;
+  color:#ccddee;font-family:'DotGothic16',monospace,'Courier New',Courier;min-height:100dvh;overflow-x:hidden;
+  padding-bottom:14px;
+}
+a{color:inherit;text-decoration:none}
+button{font-family:'DotGothic16',monospace,'Courier New',Courier;cursor:pointer;touch-action:manipulation}
+
+/* ===== HEADER ===== */
+#hdr{background:linear-gradient(160deg,#111118 0%,#0d0d14 45%,#080810 100%);border-bottom:1px solid #2a2e3a;padding:14px 16px 12px;box-shadow:0 4px 10px rgba(0,0,0,0.5);position:relative;overflow:hidden}
+#hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% -10%, rgba(68,153,238,0.10), transparent 55%);pointer-events:none}
+.hdr-inner{position:relative;z-index:1;display:flex;align-items:center;gap:12px}
+.hdr-icon{width:38px;height:38px;flex-shrink:0;border-radius:8px;background:linear-gradient(145deg,#1a1c22 0%,#0e1018 100%);border:1px solid #2a2e3a;border-top:1px solid #3a3e4a;display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 3px 8px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.08);color:#4499ee;text-shadow:0 0 10px rgba(68,153,238,0.7)}
+.logo{font-size:17px;font-weight:bold;letter-spacing:0.1em;color:#ccddee;text-shadow:0 1px 0 #000,0 0 12px rgba(68,153,238,0.25)}
+.subtitle{font-size:9.5px;color:#8899aa;letter-spacing:0.06em;margin-top:2px}
+.lang-btn{margin-left:auto;flex-shrink:0;font-size:9px;color:#8899aa;background:linear-gradient(180deg,#1a1c22,#0e1018);border:1px solid #33445588;border-radius:4px;padding:0 9px;height:26px;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;font-weight:bold;letter-spacing:0.05em}
+.lang-btn:active{transform:translateY(1px)}
+
+/* ===== STATUS STRIP ===== */
+#status-strip{background:#090b10;border-bottom:1px solid #1a1a2e;padding:6px 16px;display:flex;align-items:center;gap:14px;font-size:8.5px;color:#7788a0;letter-spacing:0.05em;flex-wrap:wrap}
+.stat-item{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.mdot{width:6px;height:6px;border-radius:50%;animation:pulse 2s infinite;flex-shrink:0}
+.mdot.grn{background:#7a8a5a;box-shadow:0 0 5px #7a8a5a}
+.mdot.blu{background:#0055aa;box-shadow:0 0 5px #0055aa;animation-delay:0.7s}
+.mdot.gld{background:#c9a227;box-shadow:0 0 5px #c9a227;animation-delay:1.4s}
+.mdot.off{background:#2a3444;box-shadow:0 0 3px #2a344488;animation:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+
+/* ===== HERO ===== */
+.hero{padding:22px 16px 6px;text-align:center}
+.hero-en{font-size:14px;font-weight:bold;letter-spacing:0.04em;color:#e4ecf5;line-height:1.6}
+.hero-jp{font-size:9.5px;color:#8899aa;letter-spacing:0.04em;margin-top:6px;line-height:1.7}
+
+/* ===== GRID / CARDS ===== */
+#grid{padding:16px;display:grid;grid-template-columns:1fr;gap:14px;max-width:880px;margin:0 auto}
+@media(min-width:680px){#grid{grid-template-columns:1fr 1fr}}
+
+.card{position:relative;overflow:hidden;background:linear-gradient(160deg,#111118 0%,#0d0d14 45%,#080810 100%);border:1px solid #2a2e3a;border-radius:10px;padding:0;
+  box-shadow:0 6px 16px rgba(0,0,0,0.55),inset 0 1px 0 rgba(220,220,210,0.06),inset 0 -2px 6px rgba(0,0,0,0.4);
+  display:flex;flex-direction:column}
+.card::before{content:'';position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle,rgba(220,220,210,0.14) 0.5px,transparent 0.5px);background-size:3px 3px;
+  mask:linear-gradient(160deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.18) 55%,transparent 100%);
+  -webkit-mask:linear-gradient(160deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.18) 55%,transparent 100%)}
+.card>*{position:relative;z-index:1}
+.card.dim{filter:saturate(0.55)}
+
+.card-hd{display:flex;justify-content:space-between;align-items:flex-start;padding:14px 16px 0}
+.card-badge{font-size:7.5px;letter-spacing:0.1em;padding:3px 7px;border-radius:3px;border:1px solid #2a2e3a;color:#8899aa;background:linear-gradient(160deg,#1a1c22,#0e1018)}
+.card-badge.on{color:#4499ee;border-color:#0055aa;text-shadow:0 0 6px rgba(68,153,238,0.5)}
+.card-badge.gld{color:#c9a227;border-color:#6a561a;text-shadow:0 0 6px rgba(201,162,39,0.4)}
+.card-stat{display:flex;align-items:center;gap:5px;font-size:7.5px;letter-spacing:0.06em;color:#7788a0}
+
+.card-icon-row{padding:10px 16px 0;display:flex;align-items:center;gap:10px}
+.card-icon{width:42px;height:42px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:21px;
+  background:linear-gradient(145deg,#1a1c22 0%,#0e1018 100%);border:1px solid #2a2e3a;border-top:1px solid #3a3e4a;
+  box-shadow:0 3px 8px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.08)}
+.card-title-en{font-size:14.5px;font-weight:bold;letter-spacing:0.05em;color:#e4ecf5;text-shadow:0 0 10px rgba(68,153,238,0.15)}
+.card-title-jp{font-size:9px;color:#8899aa;letter-spacing:0.03em;margin-top:3px;line-height:1.5}
+.card-tagline{font-size:14.5px;font-weight:bold;color:#4499ee;letter-spacing:0.08em;margin-top:3px;text-shadow:0 0 6px rgba(68,153,238,0.35)}
+
+.card-body{padding:12px 16px 4px;flex:1}
+.card-desc-en{font-size:10px;color:#aabbcc;line-height:1.65}
+.card-desc-jp{font-size:8.5px;color:#6a7a90;line-height:1.7;margin-top:6px}
+
+.tags{display:flex;flex-wrap:wrap;gap:5px;padding:10px 16px 0}
+.tag{font-size:7.5px;letter-spacing:0.05em;color:#7788a0;border:1px solid #2a2e3a;border-radius:3px;padding:2.5px 6px;background:#0a0c12}
+
+.card-ft{padding:14px 16px 16px;margin-top:auto}
+.launch-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:38px;border-radius:5px;
+  background:linear-gradient(180deg,#061228 0%,#1a2838 50%,#12202e 100%);border:1px solid #0055aa;border-top:1px solid #0066cc;
+  color:#4499ee;font-size:11px;font-weight:bold;letter-spacing:0.08em;
+  box-shadow:0 4px 0 #041020,0 5px 2px rgba(0,0,0,0.55),inset 0 1px 0 rgba(100,140,180,0.2),0 0 10px rgba(60,90,120,0.25);
+  text-shadow:0 0 6px rgba(170,200,220,0.4);transition:transform 0.06s,box-shadow 0.06s;cursor:pointer}
+.launch-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #041020,0 2px 1px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.08)}
+.launch-btn.disabled{background:linear-gradient(180deg,#1a1c22 0%,#141622 50%,#0e1018 100%);border-color:#2a2e3a;border-top-color:#3a3e4a;
+  color:#5a6478;box-shadow:0 4px 0 #08090c,0 5px 2px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.05);text-shadow:none;cursor:default;pointer-events:none}
+
+/* ===== FOOTER ===== */
+#ftr{text-align:center;color:#3a3e4a;font-size:8.5px;padding:18px 16px 10px;border-top:1px solid #1a1a2e;letter-spacing:0.08em;max-width:720px;margin:10px auto 0}
+#ftr .ftr-title{color:#5a6478}
+#ftr .ftr-en{margin-top:10px;line-height:1.7;color:#4a5468}
+#ftr .ftr-jp{margin-top:8px;line-height:1.8;color:#3a4254;font-size:8px}
+.bug-link{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:7px 16px;border-radius:5px;
+  background:linear-gradient(180deg,#1a1c22 0%,#141622 50%,#0e1018 100%);border:1px solid #2a2e3a;border-top:1px solid #3a3e4a;
+  color:#8899aa;font-size:9.5px;letter-spacing:0.05em;
+  box-shadow:0 3px 0 #08090c,0 4px 2px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);
+  transition:transform 0.06s,box-shadow 0.06s}
+.bug-link:active{transform:translateY(2px);box-shadow:0 1px 0 #08090c,0 2px 1px rgba(0,0,0,0.4)}
+
+/* ===== JA-PRIMARY MODE: swap emphasis between EN/JP pairs ===== */
+body.lang-ja .hero-en{font-size:9.5px;font-weight:normal;color:#8899aa}
+body.lang-ja .hero-jp{font-size:14px;font-weight:bold;color:#e4ecf5}
+body.lang-ja .card-title-en{font-size:9px;font-weight:normal;color:#8899aa;text-shadow:none;margin-top:3px}
+body.lang-ja .card-title-jp{font-size:14.5px;font-weight:bold;color:#e4ecf5;text-shadow:0 0 10px rgba(68,153,238,0.15);margin-top:0}
+body.lang-ja .card-desc-en{font-size:8.5px;color:#6a7a90;margin-top:6px}
+body.lang-ja .card-desc-jp{font-size:10px;color:#aabbcc;margin-top:0}
+body.lang-ja .ftr-en{color:#3a4254;font-size:8px;margin-top:8px}
+body.lang-ja .ftr-jp{color:#4a5468;font-size:8.5px;margin-top:10px}
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-icon">⚔</div>
+    <div>
+      <div class="logo">JUDGE CONSOLE HUB</div>
+      <div class="subtitle">卓上ウォーゲーム用 非公式判定支援ツール集</div>
+    </div>
+  </div>
+</div>
+
+<div id="status-strip">
+  <div class="stat-item"><span class="mdot grn"></span>SYSTEMS ONLINE</div>
+  <div class="stat-item"><span class="mdot blu"></span>2 CONSOLES LISTED</div>
+  <div class="stat-item"><span class="mdot gld"></span>FAN-MADE / UNOFFICIAL</div>
+</div>
+
+<div class="hero">
+  <div class="hero-en">Pick a console below to open its rules-adjudication tool in your browser.</div>
+  <div class="hero-jp">下記のコンソールを選択すると、各判定支援ツールがブラウザ上で起動します。</div>
+</div>
+
+<div id="grid">
+
+  <!-- ===== ASL SK JUDGE ===== -->
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-badge on">SK #1 · FIGHTING WOLVES</div>
+      <div class="card-stat"><span class="mdot grn"></span>ACTIVE</div>
+    </div>
+    <div class="card-icon-row">
+      <div class="card-icon">⚔</div>
+      <div>
+        <div class="card-tagline">歩兵戦術電子計算機</div>
+        <div class="card-title-jp">アドバンスド・スコードリーダー<br>スターターキット #1 判定支援計算機</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-desc-en">Fire, morale checks, close combat, rally, routing, casualties, movement/portage, and demolition charges for ASLSK #1 (US vs. German infantry).</div>
+      <div class="card-desc-jp">ASLSK #1（米独歩兵戦）向けに、射撃・士気チェック・白兵戦・回復・潰走・損害処理・移動／運搬・爆薬配置の判定をサポートします。</div>
+    </div>
+    <div class="tags">
+      <div class="tag">INFANTRY</div>
+      <div class="tag">US vs GER</div>
+      <div class="tag">MOBILE-FRIENDLY</div>
+    </div>
+    <div class="card-ft">
+      <a href="ASLSK_1_v23ej.html"><button class="launch-btn">▶ LAUNCH CONSOLE</button></a>
+    </div>
+  </div>
+
+  <!-- ===== GUNSLINGER JUDGE Mk.II ===== -->
+  <div class="card dim">
+    <div class="card-hd">
+      <div class="card-badge gld">Mk.II</div>
+      <div class="card-stat"><span class="mdot gld"></span>IN DEVELOPMENT</div>
+    </div>
+    <div class="card-icon-row">
+      <div class="card-icon">🤠</div>
+      <div>
+        <div class="card-title-en">GUNSLINGER JUDGE Mk.II</div>
+        <div class="card-title-jp">ガンスリンガー 判定支援計算機<br>（開発中）</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-desc-en">A companion judge console for the Gunslinger tabletop game. Currently under construction — check back soon.</div>
+      <div class="card-desc-jp">Gunslinger（ガンスリンガー）用の判定支援ツールです。現在開発中のため、しばらくお待ちください。</div>
+    </div>
+    <div class="tags">
+      <div class="tag">WESTERN SHOOTOUT</div>
+      <div class="tag">COMING SOON</div>
+    </div>
+    <div class="card-ft">
+      <button class="launch-btn disabled">⏳ COMING SOON</button>
+    </div>
+  </div>
+
+</div>
+
+<div id="ftr">
+  <div class="ftr-title">JUDGE CONSOLE HUB · FAN-MADE / UNOFFICIAL TOOL SET</div>
+  <div class="ftr-en">⚠ These are personal, non-commercial fan-made reference/calculation aids. Results may contain errors — always defer to the official rulebooks. Each title, its rules, scenarios, and unit data are the property of their respective publishers and copyright holders.</div>
+  <div class="ftr-jp">⚠ 本ツール群は個人・非営利のファン制作による非公式リファレンス／計算補助ツールです。判定結果には誤りが含まれる可能性があるため、常に正式ルールブックを優先してご確認ください。各タイトルおよびそのルール・シナリオ・ユニットデータの著作権は、それぞれの発行元・権利者に帰属します。</div>
+  <a href="https://github.com/mk70dog/aslsk-j/issues/new" target="_blank" rel="noopener"><button class="bug-link">🐛 Report a Bug / Feedback ・ 不具合報告・ご意見はこちら</button></a>
+</div>
+
+</body>
+</html>
